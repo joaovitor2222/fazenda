@@ -1,4 +1,4 @@
-let coins = 20;
+let coins = 1220;
 let highscore = localStorage.getItem('highscore') || 0;
 let playerName = '';
 let field = [];
@@ -129,20 +129,24 @@ function updateInventory() {
 }
 
 function plantSeed(lotIndex) {
-  let lot = document.getElementById('field').children[lotIndex];
+  let fieldContainer = document.getElementById('field');
+  let lots = fieldContainer.children; // Pega todos os lotes
+  let lot = lots[lotIndex]; // Obtém o lote correto
 
-  // Verifica se já existe uma planta no lote
+  if (!lot) {
+      console.error(`Erro: Lote ${lotIndex} não encontrado.`);
+      return;
+  }
+
   if (field[lotIndex].plant) {
-      // Se a planta estiver pronta para ser vendida, permite a coleta
       if (field[lotIndex].grown) {
-          sellPlant(lotIndex); // Chama a função de venda
+          sellPlant(lotIndex);
       } else {
           alert('Esta planta ainda não está pronta para ser colhida!');
       }
-      return; // Impede que o código continue se já tiver planta no lote
+      return;
   }
 
-  // Se o lote não tiver planta, pergunta ao jogador qual planta ele deseja plantar
   let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde):');
   if (!plantsData[plantType]) {
       alert('Planta inválida!');
@@ -154,25 +158,32 @@ function plantSeed(lotIndex) {
       return;
   }
 
-  // Deduz as sementes e atualiza o inventário
   inventory[plantType]--;
   updateInventory();
-
-  // Planta a semente no lote
   field[lotIndex].plant = plantType;
-  lot.classList.add('planted'); // Marca o lote como "plantado"
-  
-  // Define o tempo para a planta crescer
-  let timer = setTimeout(() => {
-      lot.innerHTML = `<img src="${plantsData[plantType].imageUrl}" />`;
-      field[lotIndex].plant = plantType; // Mantém o tipo da planta
-      field[lotIndex].grown = true; // Marca como pronto para colher
-  }, plantsData[plantType].growTime * 1000);
+  field[lotIndex].grown = false; 
 
-  // Define o timer e o estado de crescimento da planta
-  field[lotIndex].timer = timer;
-  field[lotIndex].grown = false; // A planta não está pronta ainda
+  // ✅ Agora o lote fica verde quando plantamos
+  lot.classList.add('planted'); 
+
+  setTimeout(() => {
+    field[lotIndex].grown = true;
+
+    // Depuração para ver qual lote está sendo selecionado
+    console.log(`Planta crescendo no lote ${lotIndex}`, lot);
+
+    let plantImg = document.createElement('img');
+    plantImg.src = plantsData[plantType].imageUrl;
+    plantImg.style.position = 'absolute';
+    plantImg.style.width = '50px';
+    plantImg.style.height = '50px';
+    plantImg.style.top = '5px';
+    plantImg.style.left = '5px';
+
+    lot.appendChild(plantImg); // Agora adiciona a imagem no lote correto
+}, plantsData[plantType].growTime * 1000);
 }
+
 
 function sellPlant(lotIndex) {
   const plant = field[lotIndex].plant;
@@ -202,6 +213,11 @@ function sellPlant(lotIndex) {
   lot.innerHTML = ''; // Limpa o conteúdo (imagem) do lote
   lot.classList.remove('planted'); // Remove a classe que indica que o lote foi plantado
   lot.classList.remove('ready-to-sell'); // Remove a classe indicando que está pronto para ser colhido
+
+  let bonus = getCoinBonus();
+  let finalPrice = basePrice * (1 + bonus);  // Aumenta o preço da venda com o bônus
+  console.log(`Você vendeu um ${plantType} por ${finalPrice.toFixed(2)} moedas com ${hiredSecurityCount} seguranças contratados.`);
+  return finalPrice;  // Retorna o valor final da venda
 }
 
 
@@ -290,6 +306,8 @@ function updateHighscore() {
 }
 
 let securityCount = 0; // Contagem de seguranças (Brasilballs)
+let hiredSecurityCount = 0;  // Quantidade de seguranças contratados
+let securityBaseTime = 5;    // Tempo base que a segurança leva para agir, em segundos
 const maxSecurity = 5; // Limite de seguranças
 const securityCost = 1200; // Custo por segurança
 const securityRange = 60; // Distância em pixels em que os seguranças podem atacar
@@ -355,36 +373,143 @@ function updateSecurityDisplay() {
 }
 
 // Função para mover os seguranças e disparar tiros
+// Função para mover os seguranças
 function moveAndShootSecurity() {
-    securityList.forEach(security => {
-        if (thieves.length > 0) {
-            // Encontrar o ladrão mais próximo
-            let closestThief = null;
-            let minDistance = Infinity;
-            
-            thieves.forEach(thief => {
-                let distanceToThief = distance(security.x, security.y, thief.x, thief.y);
-                if (distanceToThief < minDistance) {
-                    minDistance = distanceToThief;
-                    closestThief = thief;
-                }
-            });
+  securityList.forEach(security => {
+      if (thieves.length > 0) {
+          let closestThief = null;
+          let minDistance = Infinity;
 
-            if (closestThief) {
-                // Mover o segurança em direção ao ladrão mais próximo
-                moveSecurityTowardsThief(security, closestThief);
-                // Verifica se o segurança está perto o suficiente do ladrão para atirar
-                let distanceToThief = distance(security.x, security.y, closestThief.x, closestThief.y);
-                if (distanceToThief <= securityRange) {
-                    onThiefShot(closestThief);
-                    thieves = thieves.filter(t => t !== closestThief); // Remove o ladrão após ser atingido
-                }
-            }
-        } else {
-            // Se não houver ladrões, mover aleatoriamente
-            moveSecurityRandomly(security);
-        }
-    });
+          thieves.forEach(thief => {
+              let distanceToThief = distance(security.x, security.y, thief.x, thief.y);
+              if (distanceToThief < minDistance) {
+                  minDistance = distanceToThief;
+                  closestThief = thief;
+              }
+          });
+
+          if (closestThief) {
+              // Mover o segurança em direção ao ladrão mais próximo
+              moveSecurityTowardsThief(security, closestThief);
+              // Verifica se o segurança está perto o suficiente do ladrão para atirar
+              let distanceToThief = distance(security.x, security.y, closestThief.x, closestThief.y);
+              if (distanceToThief <= securityRange) {
+                  onThiefShot(closestThief);
+                  thieves = thieves.filter(t => t !== closestThief); // Remove o ladrão após ser atingido
+              }
+          }
+      } else {
+          // Se não houver ladrões, mover aleatoriamente
+          moveSecurityRandomly(security);
+      }
+
+      // Interação com a área das plantas
+      field.forEach((lot, index) => {
+          let lotElement = document.getElementById('field').children[index];
+          let lotX = lotElement.offsetLeft;
+          let lotY = lotElement.offsetTop;
+          let lotWidth = lotElement.offsetWidth;
+          let lotHeight = lotElement.offsetHeight;
+
+          // Verifica se o segurança está dentro da área do lote (invadindo a área da field das plantas)
+          if (security.x >= lotX && security.x <= lotX + lotWidth &&
+              security.y >= lotY && security.y <= lotY + lotHeight) {
+              // Aqui, o segurança está "invadindo" a área do lote, então ele pode interagir com a planta
+              if (lot.plant && !lot.stolen) {
+                  console.log(`Segurança protegendo o lote ${index}`);
+                  lot.stolen = false; // Lógica para o segurança proteger ou coletar a planta
+                  highlightLot(lotElement); // Destacar visualmente o lote
+                  highlightSecurity(security); // Destacar visualmente o segurança
+              }
+          } else {
+              // Resetar as alterações visuais quando o segurança sair da área
+              resetLotVisuals(lotElement);
+              resetSecurityVisuals(security);
+          }
+      });
+  });
+}
+
+// Função para adicionar destaque ao lote quando invadido
+function highlightLot(lotElement) {
+  lotElement.style.border = "3px solid red"; // Borda vermelha para indicar interação
+  lotElement.style.backgroundColor = "rgba(255, 0, 0, 0.2)"; // Fundo vermelho semitransparente
+}
+
+// Função para remover o destaque do lote
+function resetLotVisuals(lotElement) {
+  lotElement.style.border = "";
+  lotElement.style.backgroundColor = "";
+}
+
+// Função para adicionar destaque ao segurança
+function highlightSecurity(security) {
+  let securityElement = document.getElementById(`security-${security.id}`);
+  securityElement.style.backgroundColor = "yellow"; // Alerta visual para o segurança
+}
+
+function getReducedSecurityTime() {
+  let reducedTime = securityBaseTime * (1 - hiredSecurityCount * 0.05);
+  return reducedTime > 1 ? reducedTime : 1;  // O tempo não pode ser menor que 1 segundo
+}
+
+// Função para calcular o bônus de moedas baseado no número de seguranças contratados
+function getCoinBonus() {
+  return hiredSecurityCount * 0.05;  // A cada segurança contratada, ganha 5% a mais
+}
+
+let coinDropAmount = 50; // Moedas por segurança contratado
+let dropInterval = 95000; // Intervalo de 1 minuto e 35 segundos (95.000 milissegundos)
+
+// Função para adicionar moedas por cada segurança contratado a cada 1 minuto e 35 segundos
+function dropCoinsForSecurity() {
+  const totalCoinsToAdd = securityCount * coinDropAmount; // Calcula o total de moedas a ser adicionado
+  if (totalCoinsToAdd > 0) {
+    updateCoins(totalCoinsToAdd);  // Atualiza as moedas do jogador
+    alert(`Você recebeu ${totalCoinsToAdd} moedas por seus seguranças!`);
+  }
+}
+
+// Intervalo de 1 minuto e 35 segundos para dropar moedas
+setInterval(dropCoinsForSecurity, dropInterval);
+
+// Função para contratar segurança
+document.getElementById('securityButton').onclick = function () {
+  if (coins < securityCost) {
+    alert('Você não tem moedas suficientes para contratar um segurança!');
+    return;
+  }
+
+  if (securityCount >= maxSecurity) {
+    alert('Você já contratou o número máximo de seguranças!');
+    return;
+  }
+
+  // Subtrai moedas
+  coins -= securityCost;
+  securityCount++;
+
+  // Cria o segurança
+  createSecurity();
+
+  // Atualiza os displays
+  updateCoinsDisplay();
+  updateSecurityDisplay();
+};
+
+// Função para contratar seguranças
+function hireSecurity(count) {
+  hiredSecurityCount += count;  // Aumenta o número de seguranças contratados
+  console.log(`${count} seguranças contratados. Agora você tem ${hiredSecurityCount} seguranças no total.`);
+}
+
+// Exemplo de como reduzir o tempo de ação das seguranças
+let reducedTime = getReducedSecurityTime();
+
+// Função para remover o destaque do segurança
+function resetSecurityVisuals(security) {
+  let securityElement = document.getElementById(`security-${security.id}`);
+  securityElement.style.backgroundColor = "";
 }
 
 // Função para mover o segurança em direção ao ladrão
@@ -396,16 +521,17 @@ function moveSecurityTowardsThief(security, thief) {
 
 // Função para mover o segurança de forma aleatória
 function moveSecurityRandomly(security) {
-    const randomDirection = Math.random() * Math.PI * 2; // Direção aleatória
-    security.x += Math.cos(randomDirection) * 2; // Velocidade do movimento
-    security.y += Math.sin(randomDirection) * 2;
+  const randomDirection = Math.random() * Math.PI * 2; // Direção aleatória
+  security.x += Math.cos(randomDirection) * 2; // Velocidade do movimento
+  security.y += Math.sin(randomDirection) * 2;
 
-    // Impede que o segurança saia da tela
-    if (security.x < 0) security.x = 0;
-    if (security.y < 0) security.y = 0;
-    if (security.x > window.innerWidth) security.x = window.innerWidth;
-    if (security.y > window.innerHeight) security.y = window.innerHeight;
+  // Impede que o segurança saia da tela
+  if (security.x < 0) security.x = 0;
+  if (security.y < 0) security.y = 0;
+  if (security.x > window.innerWidth) security.x = window.innerWidth;
+  if (security.y > window.innerHeight) security.y = window.innerHeight;
 }
+
 
 // Função chamada quando um ladrão é atingido
 function onThiefShot(thief) {
@@ -429,6 +555,46 @@ function displaySecurityButton() {
     securityCountDisplay.innerText = `Seguranças contratados: ${securityCount}`;
     document.body.appendChild(securityCountDisplay);
 }
+
+// Função que verifica se a segurança está em um lote
+document.addEventListener("DOMContentLoaded", function() {
+  const security = document.querySelector('.security');
+  const fieldElements = document.querySelectorAll('#field div');
+
+  if (!security || fieldElements.length === 0) {
+    console.error("Erro: segurança ou campos não encontrados.");
+    return;
+  }
+
+  // Função que verifica se a segurança está em um lote
+  function checkSecurityInteraction(securityElement, fieldElements) {
+    const securityRect = securityElement.getBoundingClientRect(); // Pega as coordenadas da segurança
+
+    // Verifica se a segurança está dentro de um lote
+    fieldElements.forEach(field => {
+      const fieldRect = field.getBoundingClientRect();
+
+      if (isCollision(securityRect, fieldRect)) {
+        console.log('Segurança está no lote!');
+        // Aqui você pode adicionar a lógica para o que acontece quando a segurança está em cima de um lote
+      }
+    });
+  }
+
+  // Função que verifica a colisão entre dois elementos
+  function isCollision(rect1, rect2) {
+    return rect1.top < rect2.bottom &&
+           rect1.bottom > rect2.top &&
+           rect1.left < rect2.right &&
+           rect1.right > rect2.left;
+  }
+
+  // Chame a função a cada intervalo para verificar a interação da segurança
+  setInterval(() => {
+    checkSecurityInteraction(security, fieldElements);
+  }, 100);
+});
+
 
 // Chama a função para exibir o botão de segurança ao carregar o jogo
 window.onload = displaySecurityButton;

@@ -1,4 +1,4 @@
-let coins = 1220;
+let coins = 20;
 let highscore = localStorage.getItem('highscore') || 0;
 let playerName = '';
 let field = [];

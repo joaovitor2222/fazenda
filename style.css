@@ -1,0 +1,181 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  #gameScreen {
+    margin-top: 30px;
+  }
+  
+  #field {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Mantém a estrutura com 5 colunas */
+    gap: 10px;
+    margin-top: 20px;
+    position: relative; /* Permite que os seguranças se movam sobre ele */
+    width: 80vw;  /* A largura agora ocupa toda a tela */
+    height: 60vh; /* A altura ocupa toda a tela */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  
+  
+  #field div {
+    width: 60px;
+    height: 60px;
+    background-color: #d2b48c;
+    border-radius: 5px;
+    position: relative;
+  }
+  
+  #field div.planted {
+    background-color: green;
+  }
+
+  #field div:first-child {
+    background-color: green; /* Cor verde para o primeiro lote */
+  }
+  
+  #field div img {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 5px;
+    left: 5px;
+  }
+  
+  #loginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #loginScreen input {
+    margin-bottom: 10px;
+  }
+  
+  #inventory {
+    margin-top: 20px;
+  }
+  
+  #inventoryItems {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+  
+  .seed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  
+  .seed-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  button {
+    margin: 5px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+
+  #tutorial-button-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+  }
+  
+  #tutorial-button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #tutorial-button:hover {
+    background-color: #45a049;
+  }
+  
+
+  .thief {
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    cursor: pointer;
+    animation: thiefAnimation 5s linear forwards;
+  }
+  
+  @keyframes thiefAnimation {
+    from {
+      top: 10px;
+    }
+    to {
+      top: 100vh;
+    }
+  }
+
+  #securityField {
+    position: absolute; /* A posição é absoluta para que os seguranças fiquem sobre o campo de plantio */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2; /* Garante que os seguranças fiquem acima dos lotes */
+    pointer-events: none; /* Faz com que os seguranças não interfiram com a interação com o campo */
+  }
+  
+  .security {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: green;
+    background-image: url('https://pt.quizur.com/_image?href=https%3A%2F%2Fimg.quizur.com%2Ff%2Fimg63c453e5cb1a24.89861534.png%3FlastEdited%3D1673810949&w=400&h=400&f=webp');
+    background-size: cover;
+    background-position: bottom; /* A imagem ficará na parte inferior */
+    animation: moveSecurity 5s infinite linear;
+  }
+  
+  @keyframes moveSecurity {
+    0% {
+      transform: translate(0, 0); /* Começa na posição inicial */
+    }
+    25% {
+      transform: translate(50vw, 0); /* Move para a direita */
+    }
+    50% {
+      transform: translate(50vw, 50vh); /* Move para baixo */
+    }
+    75% {
+      transform: translate(0, 50vh); /* Move para a esquerda */
+    }
+    100% {
+      transform: translate(0, 0); /* Volta para o início */
+    }
+  }
+  
+  /* Estilo da imagem dentro do BrasilBall */
+  .security img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* A imagem também fica redonda */
+  }
+  
+  

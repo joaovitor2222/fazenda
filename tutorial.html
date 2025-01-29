@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorial</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1, h2, h3 {
+      color: #333;
+    }
+
+    .plant-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .plant-info img {
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+    }
+
+    .memory-game {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: #4CAF50; /* Fundo verde */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0;
+    }
+
+    .card img {
+      display: none;
+      width: 80%;
+      height: 80%;
+    }
+
+    .card.flipped img {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tutorial</h1>
+  <h2>Plantas e Valores</h2>
+  <div class="plant-info">
+    <img src="https://png.pngtree.com/png-clipart/20220124/original/pngtree-cartoon-golden-plump-wheat-ears-png-image_7182394.png" alt="Trigo">
+    <p>Trigo: Compra por 20, vende por 35. Cresce em 10 segundos.</p>
+  </div>
+  <div class="plant-info">
+    <img src="https://png.pngtree.com/png-vector/20240831/ourmid/pngtree-corn-design-png-image_13694493.png" alt="Milho">
+    <p>Milho: Compra por 40, vende por 80. Cresce em 30 segundos.</p>
+  </div>
+  <div class="plant-info">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvBHBJUkbjpNLu0mHT4Cav6w8cUe9-1YGncg&s" alt="Framboesa">
+    <p>Framboesa: Compra por 200, vende por 450. Cresce em 1 minuto.</p>
+  </div>
+  <div class="plant-info">
+    <img src="https://png.pngtree.com/png-vector/20231114/ourmid/pngtree-strawberry-background-diet-strawberries-png-image_10471262.png" alt="Morango">
+    <p>Morango: Compra por 1000, vende por 2500. Cresce em 3 minutos.</p>
+  </div>
+  <div class="plant-info">
+    <img src="https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png" alt="Maçã">
+    <p>Maçã: Compra por 2500, vende por 6000. Cresce em 5 minutos.</p>
+  </div>
+  <div class="plant-info">
+    <img src="https://png.pngtree.com/png-clipart/20230930/original/pngtree-big-green-apple-png-image_13022349.png" alt="Maçã Verde">
+    <p>Maçã Verde: Compra por 12.000, vende por 50.000. Cresce em 12 minutos.</p>
+  </div>
+
+  <h2>Ladrões</h2>
+  <p>Os ladrões aparecem dependendo das plantas que você tiver. Clique neles para ganhar 280 moedas, mas se você não clicar rápido, eles roubam uma planta!</p>
+
+  <h2>Minigame: Jogo da Memória</h2>
+  <div id="memory-game" class="memory-game"></div>
+
+  <script>
+    // Dados do jogo da memória
+    const images = [
+      'https://png.pngtree.com/png-clipart/20220124/original/pngtree-cartoon-golden-plump-wheat-ears-png-image_7182394.png',
+      'https://png.pngtree.com/png-vector/20240831/ourmid/pngtree-corn-design-png-image_13694493.png',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvBHBJUkbjpNLu0mHT4Cav6w8cUe9-1YGncg&s',
+      'https://png.pngtree.com/png-vector/20231114/ourmid/pngtree-strawberry-background-diet-strawberries-png-image_10471262.png',
+      'https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png',
+      'https://png.pngtree.com/png-clipart/20230930/original/pngtree-big-green-apple-png-image_13022349.png',
+    ];
+
+    const gameContainer = document.getElementById('memory-game');
+    let flippedCards = [];
+    let matchedCards = [];
+
+    // Cria as cartas
+    function createMemoryCards() {
+      const cards = [...images, ...images]; // Duas de cada imagem
+      cards.sort(() => 0.5 - Math.random()); // Embaralha
+
+      cards.forEach((src) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.image = src;
+
+        const img = document.createElement('img');
+        img.src = src;
+        card.appendChild(img);
+
+        card.addEventListener('click', () => flipCard(card));
+        gameContainer.appendChild(card);
+      });
+    }
+
+    // Vira a carta
+    function flipCard(card) {
+      if (flippedCards.length === 2 || matchedCards.includes(card)) return;
+
+      card.classList.add('flipped');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
+    }
+
+    // Verifica se houve um match
+    function checkMatch() {
+      const [card1, card2] = flippedCards;
+
+      if (card1.dataset.image === card2.dataset.image) {
+        matchedCards.push(card1, card2);
+        flippedCards = [];
+      } else {
+        setTimeout(() => {
+          card1.classList.remove('flipped');
+          card2.classList.remove('flipped');
+          flippedCards = [];
+        }, 1000);
+      }
+    }
+
+    createMemoryCards();
+  </script>
+</body>
+</html>

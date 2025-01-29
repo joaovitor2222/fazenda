@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo de Fazenda</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loginScreen">
+    <h2>Tela de Login</h2>
+    <input type="text" id="playerName" placeholder="Digite seu nome">
+    <button onclick="startGame()">Entrar</button>
+  </div>
+
+  <div id="tutorial-button-container">
+    <button id="tutorial-button" onclick="window.location.href='tutorial.html'">Tutorial</button>
+  </div>
+  
+
+  <div id="gameScreen" style="display:none;">
+    <h2>Bem-vindo<span id="playerNameDisplay"></span></h2>
+    <h3>Moedas: <span id="coins">0</span></h3>
+    <h3>Recorde de Moedas: <span id="highscore">0</span></h3>
+    
+    <div id="inventory">
+      <h3>Inventário</h3>
+      <div id="inventoryItems">
+        <div class="seed" id="seeds-trigo"><span>Trigo</span><div class="seed-icon" style="background-color: yellow;"></div><span id="trigo-count">0</span></div>
+        <div class="seed" id="seeds-milho"><span>Milho</span><div class="seed-icon" style="background-color: orange;"></div><span id="milho-count">0</span></div>
+        <div class="seed" id="seeds-framboesa"><span>Framboesa</span><div class="seed-icon" style="background-color: pink;"></div><span id="framboesa-count">0</span></div>
+        <div class="seed" id="seeds-morango"><span>Morango</span><div class="seed-icon" style="background-color: red;"></div><span id="morango-count">0</span></div>
+        <div class="seed" id="seeds-maca"><span>Maçã</span><div class="seed-icon" style="background-color: brown;"></div><span id="maca-count">0</span></div>
+        <div class="seed" id="seeds-macaverde"><span>Maçã Verde</span><div class="seed-icon" style="background-color: gold;"></div><span id="macaverde-count">0</span></div>
+      </div>
+    </div>
+    
+    <button onclick="buySeed('trigo')">Comprar Semente de Trigo (20 moedas)</button>
+    <button onclick="buySeed('milho')">Comprar Semente de Milho (40 moedas)</button>
+    <button onclick="buySeed('framboesa')">Comprar Semente de Framboesa (200 moedas)</button>
+    <button onclick="buySeed('morango')">Comprar Semente de Morango (1000 moedas)</button>
+    <button onclick="buySeed('maca')">Comprar Semente de Maçã (2500 moedas)</button>
+    <button onclick="buySeed('macaverde')">Comprar Semente de Maçã Verde (12000 moedas)</button>
+    <button id="securityButton">Contratar Segurança (1200 moedas)</button>
+    <div id="securityCount">Seguranças contratados: 0/4</div>
+
+    <!-- Container para seguranças -->
+
+
+
+    <div id="field">
+      <!-- Lotes de plantio vão aqui -->
+      <div id="securityField"></div>
+    </div>
+    <p>aviso por hora so pode contratar 4 segurancas o 5º ta bugado</p><p>peço desculpa em alguma att futura eu arrumo</p><p>lote verde não e plantavel é o spawn dos seguranças, cuidado com ladroes do game</p>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

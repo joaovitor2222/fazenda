@@ -318,24 +318,19 @@ let securityList = []; // Lista de seguranças
 
 // Adiciona o BrasilBall (segurança) ao campo de segurança
 function createSecurity() {
-  if (securityCount < maxSecurity) {
-    const security = document.createElement('div');
-    security.classList.add('security');
-    security.style.position = 'absolute';
+  const security = document.createElement('div');
+  security.classList.add('security');
+  security.style.position = 'absolute';
+  // Configurações do segurança, como imagem do BrasilBall:
+  const img = document.createElement('img');
+  img.src = ''; // Adicione a URL da imagem do BrasilBall
+  img.alt = 'brasil';
+  security.appendChild(img);
 
-    // Imagem do BrasilBall
-    const img = document.createElement('img');
-    img.src = '';
-    img.alt = 'brasil';
-    security.appendChild(img);
-
-    // Adiciona ao container de seguranças
-    document.getElementById('securityField').appendChild(security);
-
-    // Muda a contagem de seguranças no display
-    updateSecurityDisplay();
-  }
+  document.getElementById('securityField').appendChild(security);
+  updateSecurityDisplay();
 }
+
 
 
 // Função de comprar segurança

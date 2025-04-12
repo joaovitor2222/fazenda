@@ -505,10 +505,27 @@ function dropCoinsForSecurity() {
     updateCoins(totalCoinsToAdd);  // Atualiza as moedas do jogador
     alert(`Você recebeu ${totalCoinsToAdd} moedas por seus seguranças!`);
   }
+
 }
 
+function scheduleDropCoinsForSecurity() {
+  // Intervalo normal (1 minuto e 35 segundos)
+  const normalInterval = dropInterval; // ou 95000, se dropInterval estiver definido assim
+  
+  // Se houver 5 seguranças, o intervalo diminui 30% (ou seja, 70% do normal)
+  const adjustedInterval = (securityCount === 5) ? normalInterval * 0.7 : normalInterval;
+  
+  // Chama a função que dá o drop nas moedas
+  dropCoinsForSecurity();
+
+  // Agenda a próxima chamada após o intervalo ajustado
+  setTimeout(scheduleDropCoinsForSecurity, adjustedInterval);
+}
+
+scheduleDropCoinsForSecurity();
+
 // Intervalo de 1 minuto e 35 segundos para dropar moedas
-setInterval(dropCoinsForSecurity, dropInterval);
+//setInterval(dropCoinsForSecurity, dropInterval);
 
 // Função para contratar segurança
 document.getElementById('securityButton').onclick = function () {

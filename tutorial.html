@@ -106,6 +106,7 @@
     const gameContainer = document.getElementById('memory-game');
     let flippedCards = [];
     let matchedCards = [];
+    const memoryStartTime = Date.now();
 
     // Cria as cartas
     function createMemoryCards() {
@@ -140,19 +141,49 @@
 
     // Verifica se houve um match
     function checkMatch() {
-      const [card1, card2] = flippedCards;
-
-      if (card1.dataset.image === card2.dataset.image) {
-        matchedCards.push(card1, card2);
-        flippedCards = [];
-      } else {
-        setTimeout(() => {
-          card1.classList.remove('flipped');
-          card2.classList.remove('flipped');
-          flippedCards = [];
-        }, 1000);
+    const [card1, card2] = flippedCards;
+    if (card1.dataset.image === card2.dataset.image) {
+      matchedCards.push(card1, card2);
+      flippedCards = [];
+      // Se todas as cartas foram acertadas, o jogo acabou:
+      if (matchedCards.length === images.length * 2) {
+        // Aguarda um pequeno tempo e chama a função de conclusão
+        setTimeout(onMemoryGameComplete, 500);
       }
+    } else {
+      setTimeout(() => {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        flippedCards = [];
+      }, 1000);
     }
+    }
+
+      function onMemoryGameComplete() {
+    const memoryEndTime = Date.now();
+    const timeElapsed = (memoryEndTime - memoryStartTime) / 1000; // em segundos
+    let aduboAward = 0;
+
+    // Critérios de premiação:
+    // Se zerar em menos de 4 minutos (240 segundos): +1
+    // Se zerar em menos de 1 minuto e 30 segundos (90 segundos): +2
+    // Se zerar em menos de 30 segundos e tiver acertado todas as cartas: +3
+    if (timeElapsed < 30 && matchedCards.length === (images.length * 2)) {
+      aduboAward = 3;
+    } else if (timeElapsed < 90) {
+      aduboAward = 2;
+    } else if (timeElapsed < 240) {
+      aduboAward = 1;
+    }
+    
+    // Limita o adubo armazenado ao máximo de 5
+    // Supondo que "window.adubo" seja a variável global definida no jogo
+    if (typeof window.adubo !== 'undefined') {
+      window.adubo = Math.min(window.adubo + aduboAward, 5);
+    }
+    
+    alert(`Você completou o minigame em ${timeElapsed.toFixed(2)} segundos e ganhou ${aduboAward} adubo(s)!`);
+  }
 
     createMemoryCards();
   </script>

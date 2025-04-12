@@ -32,6 +32,7 @@ let adubo = parseInt(localStorage.getItem('adubo')) || 0;
 let aduboAtivo = false;      // Flag que indica se o efeito do adubo está ativo
 let aduboTimer = null;       // Guardará o temporizador do efeito
 let aduboActivationTime = 0; // Para registrar o instante de ativação
+let aduboProgressInterval = null;
 
 const seedPrices = {
     trigo: 20,
@@ -245,22 +246,27 @@ function useAdubo() {
     alert('O adubo já está ativo!');
     return;
   }
-  
   adubo--; // Consome 1 adubo
-  // Atualiza o localStorage para refletir a mudança
   localStorage.setItem('adubo', adubo);
   updateAduboDisplay();
 
   aduboAtivo = true;
   aduboActivationTime = Date.now();
   alert('Adubo ativado! Plantas que você plantar agora terão crescimento 50% mais rápido por 5 minutos.');
+  
+  // Exibe a barra do timer
+  document.getElementById('aduboTimerContainer').style.display = 'block';
+  // Inicia o intervalo de atualização a cada 100ms
+  aduboProgressInterval = setInterval(updateAduboTimerBar, 100);
 
-  // Ativa o efeito por 5 minutos (300000 milissegundos)
   aduboTimer = setTimeout(() => {
     aduboAtivo = false;
+    clearInterval(aduboProgressInterval);
+    document.getElementById('aduboTimerContainer').style.display = 'none';
     alert('O efeito do adubo expirou!');
-  }, 300000);
+  }, 300000); // 300000 ms = 5 minutos
 }
+
 
 function resetGame() {
     coins = 20;

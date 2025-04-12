@@ -34,7 +34,7 @@ const seedPrices = {
     framboesa: 200,
     morango: 1000,
     maca: 2500,
-    macaVerde: 12000
+    macaverde: 12000
   };
   
   // Valores de venda das plantas
@@ -44,7 +44,7 @@ const seedPrices = {
     framboesa: 450,
     morango: 2500,
     maca: 6000,
-    macaVerde: 50000
+    macaverde: 50000
   };
 
 

@@ -71,7 +71,7 @@ function startGame() {
 }
 
 function updateAduboDisplay() {
-  document.getElementById('aduboCount').innerText = adubo;
+  document.getElementById('aduboCount').innerText = `Você tem ${adubo} adubo${adubo !== 1 ? 's' : ''}`;
 }
 
 
@@ -270,10 +270,6 @@ function resetGame() {
     thieves = [];
     initGame(); // Re-inicia o jogo com as variáveis resetadas
   }
-
-function updateAduboDisplay() {
-  document.getElementById('aduboCount').innerText = adubo;
-}
 
 function checkAdubo() {
   if (adubo > 0 && !aduboAtivo) {  // Se houver adubo e não estiver ativo

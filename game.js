@@ -274,6 +274,13 @@ function updateAduboDisplay() {
   document.getElementById('aduboCount').innerText = adubo;
 }
 
+function checkAdubo() {
+  if (adubo > 0 && !aduboAtivo) {  // Se houver adubo e não estiver ativo
+    document.getElementById("aduboButton").style.display = "block";  // Exibe o botão de adubo
+  } else {
+    document.getElementById("aduboButton").style.display = "none";  // Esconde o botão caso contrário
+  }
+}
 
   function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

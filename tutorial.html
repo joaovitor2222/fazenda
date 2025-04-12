@@ -109,35 +109,24 @@
     const memoryStartTime = Date.now();
 
     // Cria as cartas
-    function createMemoryCards() {
-      const cards = [...images, ...images]; // Duas de cada imagem
-      cards.sort(() => 0.5 - Math.random()); // Embaralha
+  function checkMatch() {
+    const [card1, card2] = flippedCards;
 
-      cards.forEach((src) => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.dataset.image = src;
-
-        const img = document.createElement('img');
-        img.src = src;
-        card.appendChild(img);
-
-        card.addEventListener('click', () => flipCard(card));
-        gameContainer.appendChild(card);
-      });
-    }
-
-    // Vira a carta
-    function flipCard(card) {
-      if (flippedCards.length === 2 || matchedCards.includes(card)) return;
-
-      card.classList.add('flipped');
-      flippedCards.push(card);
-
-      if (flippedCards.length === 2) {
-        checkMatch();
+    if (card1.dataset.image === card2.dataset.image) {
+      matchedCards.push(card1, card2);
+      flippedCards = [];
+      // Se todas as cartas foram acertadas, o jogo acabou:
+      if (matchedCards.length === images.length * 2) {
+        setTimeout(onMemoryGameComplete, 500);
       }
+    } else {
+      setTimeout(() => {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        flippedCards = [];
+      }, 1000);
     }
+  }
 
     // Verifica se houve um match
     function checkMatch() {
@@ -159,30 +148,33 @@
     }
     }
 
-      function onMemoryGameComplete() {
+function onMemoryGameComplete() {
     const memoryEndTime = Date.now();
-    const timeElapsed = (memoryEndTime - memoryStartTime) / 1000; // em segundos
+    const timeElapsed = (memoryEndTime - memoryStartTime) / 1000; // tempo em segundos
     let aduboAward = 0;
 
     // Critérios de premiação:
-    // Se zerar em menos de 4 minutos (240 segundos): +1
-    // Se zerar em menos de 1 minuto e 30 segundos (90 segundos): +2
-    // Se zerar em menos de 30 segundos e tiver acertado todas as cartas: +3
+    // Se zerar em menos de 30 segundos e acertar todas as cartas => 3 adubos
     if (timeElapsed < 30 && matchedCards.length === (images.length * 2)) {
       aduboAward = 3;
-    } else if (timeElapsed < 90) {
+    }
+    // Se zerar em menos de 1 minuto e 30 segundos => 2 adubos
+    else if (timeElapsed < 90) {
       aduboAward = 2;
-    } else if (timeElapsed < 240) {
+    }
+    // Se zerar em menos de 4 minutos => 1 adubo
+    else if (timeElapsed < 240) {
       aduboAward = 1;
     }
     
-    // Limita o adubo armazenado ao máximo de 5
-    // Supondo que "window.adubo" seja a variável global definida no jogo
-    if (typeof window.adubo !== 'undefined') {
-      window.adubo = Math.min(window.adubo + aduboAward, 5);
-    }
+    // Obtém o total atual de adubos do localStorage (ou 0 se não houver)
+    let aduboAtual = parseInt(localStorage.getItem('adubo')) || 0;
+    // Soma os adubos ganhos, limitando o total a no máximo 5
+    aduboAtual = Math.min(aduboAtual + aduboAward, 5);
+    // Atualiza o localStorage
+    localStorage.setItem('adubo', aduboAtual);
     
-    alert(`Você completou o minigame em ${timeElapsed.toFixed(2)} segundos e ganhou ${aduboAward} adubo(s)!`);
+    alert(`Você completou o minigame em ${timeElapsed.toFixed(2)} segundos e ganhou ${aduboAward} adubo(s)! Total de adubos: ${aduboAtual}`);
   }
 
     createMemoryCards();

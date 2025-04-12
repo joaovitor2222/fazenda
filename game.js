@@ -343,7 +343,54 @@ function checkAdubo() {
       plantPositions[plantType].stolen = true;
     }
   }
+
+function spawnThieves() {
+  // Verifica se ainda cabe mais ladrões
+  if (thieves.length >= maxThieves) {
+    return;
+  }
   
+  // Obtenha o elemento do campo e suas dimensões
+  const fieldEl = document.getElementById('field');
+  const fieldWidth = fieldEl.offsetWidth;
+  // Podemos começar os ladrões do topo (y=0)
+  const initialY = 0;
+  
+  // Define uma posição aleatória em X dentro do campo
+  const initialX = Math.random() * (fieldWidth - 30); // subtrai 30 para evitar que ultrapasse a borda (pois o ladrão tem 30px de largura)
+
+  // Cria um objeto para o ladrão
+  let thief = {
+    x: initialX,
+    y: initialY,
+    element: null
+  };
+
+  // Cria o elemento visual do ladrão e configura estilos
+  const thiefEl = document.createElement('div');
+  thiefEl.classList.add('thief');
+  thiefEl.style.left = `${initialX}px`;
+  thiefEl.style.top = `${initialY}px`;
+
+  // Adiciona o event listener para quando o ladrão for clicado (o que dá a recompensa e remove o ladrão)
+  thiefEl.addEventListener('click', function() {
+    updateCoins(thiefReward);
+    alert(`Você recebeu ${thiefReward} moedas por clicar no ladrão!`);
+    // Remove o elemento do DOM
+    thiefEl.remove();
+    // Remove o ladrão do array
+    thieves = thieves.filter(t => t !== thief);
+  });
+
+  // Armazena a referência do elemento no objeto
+  thief.element = thiefEl;
+
+  // Adiciona o ladrão no campo e no array global
+  fieldEl.appendChild(thiefEl);
+  thieves.push(thief);
+}
+
+
 function updateHighscore() {
   if (coins > highscore) {
     highscore = coins;

@@ -27,7 +27,8 @@ let thieves = []; // Lista de ladrões ativos
 let thiefSpawnInterval = 10 * 60 * 1000; // 10 minutos em milissegundos
 let maxThieves = 12; // Máximo de ladrões simultâneos
 let thiefReward = 280; // Moedas ganhas ao clicar em um ladrão
-let adubo = 0;              // Total de adubos armazenados (máximo 5)
+// Recupera o total de adubos salvo (ou 0 se não houver)
+let adubo = parseInt(localStorage.getItem('adubo')) || 0;
 let aduboAtivo = false;      // Flag que indica se o efeito do adubo está ativo
 let aduboTimer = null;       // Guardará o temporizador do efeito
 let aduboActivationTime = 0; // Para registrar o instante de ativação
@@ -67,6 +68,11 @@ function startGame() {
   initializeField();
   updateInventory();
 }
+
+function updateAduboDisplay() {
+  document.getElementById('aduboCount').innerText = adubo;
+}
+
 
 function initializeField() {
   let fieldContainer = document.getElementById('field');
@@ -134,32 +140,32 @@ function updateInventory() {
 
 function plantSeed(lotIndex) {
   let fieldContainer = document.getElementById('field');
-  let lots = fieldContainer.children; // Pega todos os lotes
-  let lot = lots[lotIndex]; // Obtém o lote correto
+  let lots = fieldContainer.children;
+  let lot = lots[lotIndex];
 
   if (!lot) {
-      console.error(`Erro: Lote ${lotIndex} não encontrado.`);
-      return;
+    console.error(`Erro: Lote ${lotIndex} não encontrado.`);
+    return;
   }
 
   if (field[lotIndex].plant) {
-      if (field[lotIndex].grown) {
-          sellPlant(lotIndex);
-      } else {
-          alert('Esta planta ainda não está pronta para ser colhida!');
-      }
-      return;
+    if (field[lotIndex].grown) {
+      sellPlant(lotIndex);
+    } else {
+      alert('Esta planta ainda não está pronta para ser colhida!');
+    }
+    return;
   }
 
   let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde):');
   if (!plantsData[plantType]) {
-      alert('Planta inválida!');
-      return;
+    alert('Planta inválida!');
+    return;
   }
 
   if (inventory[plantType] === 0) {
-      alert('Você não tem sementes dessa planta!');
-      return;
+    alert('Você não tem sementes dessa planta!');
+    return;
   }
 
   inventory[plantType]--;
@@ -167,13 +173,17 @@ function plantSeed(lotIndex) {
   field[lotIndex].plant = plantType;
   field[lotIndex].grown = false; 
 
-  // ✅ Agora o lote fica verde quando plantamos
   lot.classList.add('planted'); 
 
+  // Tempo de crescimento padrão
+  let tempoCrescimento = plantsData[plantType].growTime;
+  // Se o adubo estiver ativo, reduzir o tempo em 50%
+  if (aduboAtivo) {
+    tempoCrescimento *= 0.5;
+  }
+  
   setTimeout(() => {
     field[lotIndex].grown = true;
-
-    // Depuração para ver qual lote está sendo selecionado
     console.log(`Planta crescendo no lote ${lotIndex}`, lot);
 
     let plantImg = document.createElement('img');
@@ -184,8 +194,8 @@ function plantSeed(lotIndex) {
     plantImg.style.top = '5px';
     plantImg.style.left = '5px';
 
-    lot.appendChild(plantImg); // Agora adiciona a imagem no lote correto
-}, plantsData[plantType].growTime * 1000);
+    lot.appendChild(plantImg);
+  }, tempoCrescimento * 1000);
 }
 
 
@@ -235,7 +245,9 @@ function useAdubo() {
     return;
   }
   
-  adubo--; // Consome 1 adubo (você pode ajustar para consumir mais se preferir)
+  adubo--; // Consome 1 adubo
+  // Atualiza o localStorage para refletir a mudança
+  localStorage.setItem('adubo', adubo);
   updateAduboDisplay();
 
   aduboAtivo = true;
@@ -636,9 +648,16 @@ function initGame() {
     console.log('Jogo iniciado!');
     setInterval(moveThieves, 1000); // Atualiza o movimento dos ladrões a cada 1 segundo
   }
+
+document.getElementById('aduboButton').onclick = function() {
+  useAdubo();
+};
   
   // Chama a inicialização do jogo quando a página carrega
   window.onload = initGame;
+
+// Atualiza a exibição logo na inicialização do jogo:
+updateAduboDisplay();
 
 setInterval(() => {
   updateHighscore();

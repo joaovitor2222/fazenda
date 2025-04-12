@@ -350,17 +350,13 @@ document.getElementById('securityButton').onclick = function () {
     return;
   }
 
-  // Subtrai moedas
   coins -= securityCost;
-  securityCount++;
-
-  // Cria o segurança
-  createSecurity();
-
-  // Atualiza os displays
+  createSecurity();    // Cria o segurança primeiro
+  securityCount++;     // Incrementa depois
   updateCoinsDisplay();
   updateSecurityDisplay();
 };
+
 
 
 function updateCoinsDisplay() {

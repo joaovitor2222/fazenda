@@ -109,24 +109,35 @@
     const memoryStartTime = Date.now();
 
     // Cria as cartas
-  function checkMatch() {
-    const [card1, card2] = flippedCards;
+    function createMemoryCards() {
+      const cards = [...images, ...images]; // Duas de cada imagem
+      cards.sort(() => 0.5 - Math.random()); // Embaralha
 
-    if (card1.dataset.image === card2.dataset.image) {
-      matchedCards.push(card1, card2);
-      flippedCards = [];
-      // Se todas as cartas foram acertadas, o jogo acabou:
-      if (matchedCards.length === images.length * 2) {
-        setTimeout(onMemoryGameComplete, 500);
-      }
-    } else {
-      setTimeout(() => {
-        card1.classList.remove('flipped');
-        card2.classList.remove('flipped');
-        flippedCards = [];
-      }, 1000);
+      cards.forEach((src) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.image = src;
+
+        const img = document.createElement('img');
+        img.src = src;
+        card.appendChild(img);
+
+        card.addEventListener('click', () => flipCard(card));
+        gameContainer.appendChild(card);
+      });
     }
-  }
+
+    // Vira a carta
+    function flipCard(card) {
+      if (flippedCards.length === 2 || matchedCards.includes(card)) return;
+
+      card.classList.add('flipped');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
+    }
 
     // Verifica se houve um match
     function checkMatch() {

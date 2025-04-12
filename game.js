@@ -67,6 +67,7 @@ function startGame() {
 
   initializeField();
   updateInventory();
+  checkAdubo();
 }
 
 function updateAduboDisplay() {

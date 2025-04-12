@@ -13,7 +13,7 @@ let inventory = {
 
 let plantsData = {
   trigo: { price: 20, sellPrice: 35, growTime: 10, imageUrl: 'https://png.pngtree.com/png-clipart/20220124/original/pngtree-cartoon-golden-plump-wheat-ears-png-image_7182394.png' },
-  milho: { price: 40, sellPrice: 80, growTime: 30, imageUrl: 'https://png.pngtree.com/png-vector/20240831/ourmid/pngtree-corn-design-png-image_13694493.png' },
+  milho: { price: 40, sellPrice: 80, growTime: 20, imageUrl: 'https://png.pngtree.com/png-vector/20240831/ourmid/pngtree-corn-design-png-image_13694493.png' },
   framboesa: { price: 200, sellPrice: 450, growTime: 60, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvBHBJUkbjpNLu0mHT4Cav6w8cUe9-1YGncg&s' },
   morango: { price: 1000, sellPrice: 2500, growTime: 180, imageUrl: 'https://png.pngtree.com/png-vector/20231114/ourmid/pngtree-strawberry-background-diet-strawberries-png-image_10471262.png' },
   maca: { price: 2500, sellPrice: 6000, growTime: 300, imageUrl: 'https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png' },

@@ -27,6 +27,10 @@ let thieves = []; // Lista de ladrões ativos
 let thiefSpawnInterval = 10 * 60 * 1000; // 10 minutos em milissegundos
 let maxThieves = 12; // Máximo de ladrões simultâneos
 let thiefReward = 280; // Moedas ganhas ao clicar em um ladrão
+let adubo = 0;              // Total de adubos armazenados (máximo 5)
+let aduboAtivo = false;      // Flag que indica se o efeito do adubo está ativo
+let aduboTimer = null;       // Guardará o temporizador do efeito
+let aduboActivationTime = 0; // Para registrar o instante de ativação
 
 const seedPrices = {
     trigo: 20,
@@ -221,8 +225,29 @@ function sellPlant(lotIndex) {
 }
 
 
+function useAdubo() {
+  if (adubo <= 0) {
+    alert('Você não tem adubo suficiente!');
+    return;
+  }
+  if (aduboAtivo) {
+    alert('O adubo já está ativo!');
+    return;
+  }
+  
+  adubo--; // Consome 1 adubo (você pode ajustar para consumir mais se preferir)
+  updateAduboDisplay();
 
+  aduboAtivo = true;
+  aduboActivationTime = Date.now();
+  alert('Adubo ativado! Plantas que você plantar agora terão crescimento 50% mais rápido por 5 minutos.');
 
+  // Ativa o efeito por 5 minutos (300000 milissegundos)
+  aduboTimer = setTimeout(() => {
+    aduboAtivo = false;
+    alert('O efeito do adubo expirou!');
+  }, 300000);
+}
 
 function resetGame() {
     coins = 20;
@@ -232,6 +257,11 @@ function resetGame() {
     thieves = [];
     initGame(); // Re-inicia o jogo com as variáveis resetadas
   }
+
+function updateAduboDisplay() {
+  document.getElementById('aduboCount').innerText = adubo;
+}
+
 
   function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

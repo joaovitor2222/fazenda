@@ -36,6 +36,30 @@ let aduboProgressInterval = null;
 let modClickCount = 0;
 const modClickThreshold = 5;
 
+// A cada 10 segundos o ladrão tenta roubar uma planta (exceto trigo e milho)
+const stealingInterval = setInterval(() => {
+  // Se o ladrão já foi removido (não tá mais no array ou no DOM), para a função
+  if (!thieves.includes(thief) || !document.body.contains(thief.element)) {
+    clearInterval(stealingInterval);
+    return;
+  }
+
+  // Seleciona todas as plantas que não sejam trigo ou milho
+  const allPlants = Array.from(document.querySelectorAll('.plant'));
+  const targetablePlants = allPlants.filter(p => {
+    const type = p.getAttribute('data-type');
+    return type !== 'trigo' && type !== 'milho';
+  });
+
+  // Se existir alguma planta válida, rouba uma aleatória
+  if (targetablePlants.length > 0) {
+    const plantToSteal = targetablePlants[Math.floor(Math.random() * targetablePlants.length)];
+    plantToSteal.remove();
+    alert('Um ladrão roubou uma planta!');
+  }
+}, 10000); // 10 segundos
+
+
 
 const seedPrices = {
     trigo: 20,

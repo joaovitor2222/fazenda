@@ -189,9 +189,9 @@ function plantSeed(lotIndex) {
     tempoCrescimento *= 0.5;
   }
   
-  setTimeout(() => {
-    field[lotIndex].grown = true;
-    console.log(`Planta crescendo no lote ${lotIndex}`, lot);
+setTimeout(() => {
+  field[lotIndex].grown = true;
+  console.log(`Planta crescendo no lote ${lotIndex}`, lot);
 
     let plantImg = document.createElement('img');
     plantImg.src = plantsData[plantType].imageUrl;
@@ -202,11 +202,12 @@ function plantSeed(lotIndex) {
     plantImg.style.left = '5px';
     plantImg.classList.add("plant");
     plantImg.setAttribute('data-type', plantType);
-
-
+    // Adicione aqui o atributo que armazena o índice do lote:
+    plantImg.setAttribute('data-lot', lotIndex);
 
     lot.appendChild(plantImg);
   }, tempoCrescimento * 1000);
+
 }
 
 

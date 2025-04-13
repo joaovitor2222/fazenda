@@ -277,6 +277,13 @@ function resetGame() {
     initGame(); // Re-inicia o jogo com as variáveis resetadas
   }
 
+function updateAduboTimerBar() {
+  const duration = 300000; // 5 minutos em ms
+  const elapsed = Date.now() - aduboActivationTime;
+  const percentRemaining = Math.max(0, 100 - (elapsed / duration * 100));
+  document.getElementById('aduboTimerBar').style.width = percentRemaining + '%';
+}
+
 function checkAdubo() {
   if (adubo > 0 && !aduboAtivo) {  // Se houver adubo e não estiver ativo
     document.getElementById("aduboButton").style.display = "block";  // Exibe o botão de adubo

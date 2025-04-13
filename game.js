@@ -255,16 +255,16 @@ function useAdubo() {
   alert('Adubo ativado! Plantas que você plantar agora terão crescimento 50% mais rápido por 5 minutos.');
   
   // Exibe a barra do timer
-  document.getElementById('aduboTimerContainer').style.display = 'block';
-  // Inicia o intervalo de atualização a cada 100ms
-  aduboProgressInterval = setInterval(updateAduboTimerBar, 100);
+document.getElementById('aduboTimerContainer').style.display = 'block';
+document.getElementById('aduboTimerBar').style.width = '100%'; // Começa cheia
+aduboProgressInterval = setInterval(updateAduboTimerBar, 100);
 
-  aduboTimer = setTimeout(() => {
-    aduboAtivo = false;
-    clearInterval(aduboProgressInterval);
-    document.getElementById('aduboTimerContainer').style.display = 'none';
-    alert('O efeito do adubo expirou!');
-  }, 300000); // 300000 ms = 5 minutos
+aduboTimer = setTimeout(() => {
+  aduboAtivo = false;
+  clearInterval(aduboProgressInterval);
+  document.getElementById('aduboTimerContainer').style.display = 'none'; // Esconde a barra
+  alert('O efeito do adubo expirou!');
+}, 300000);
 }
 
 

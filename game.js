@@ -344,28 +344,37 @@ function checkAdubo() {
   }
   
   // Função para lidar com o roubo de uma planta
-  function onPlantStolen(plantType) {
-    // Verifica se a planta existe
-    if (!plantPositions[plantType]) {
-      console.log('Erro: A planta não existe.');
-      return; // Se a planta não existe, não faz nada
-    }
-  
-    // Verifica se a planta roubada não é milho ou trigo
-    if (plantType !== 'milho' && plantType !== 'trigo') {
-      const seedCost = seedPrices[plantType];
-      const refund = seedCost * 0.10; // 10% de reembolso
-      updateCoins(refund);
-      alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
-    } else {
-      alert('Os ladrões ignoraram suas plantas de milho/trigo.');
-    }
-  
-    // Marca a planta como roubada
-    if (plantPositions[plantType]) {
-      plantPositions[plantType].stolen = true;
-    }
+  function onPlantStolen(plantElement) {
+  // Obtém o índice do lote a partir do atributo data-lot
+  const lotIndex = parseInt(plantElement.getAttribute('data-lot'));
+
+  // Se por algum motivo não conseguir recuperar o índice, aborta
+  if (isNaN(lotIndex)) {
+    console.log('Erro: Não foi possível identificar o lote da planta.');
+    return;
   }
+
+  // Verifica se a planta roubada não é milho ou trigo
+  const plantType = plantElement.getAttribute('data-type');
+  if (plantType !== 'milho' && plantType !== 'trigo') {
+    const seedCost = seedPrices[plantType];
+    const refund = seedCost * 0.10; // 10% de reembolso
+    updateCoins(refund);
+    alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
+  } else {
+    alert('Os ladrões ignoraram suas plantas de milho/trigo.');
+  }
+
+  // Atualiza o estado do lote: remove a planta e limpa o DOM
+  field[lotIndex].plant = null;
+  field[lotIndex].grown = false;
+  let lot = document.getElementById('field').children[lotIndex];
+  if (lot) {
+    lot.innerHTML = ''; // Remove o conteúdo (imagem da planta)
+    lot.classList.remove('planted');
+  }
+}
+
 
 function spawnThieves() {
   // Verifica se ainda cabe mais ladrões

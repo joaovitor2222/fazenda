@@ -222,6 +222,8 @@ function plantSeed(lotIndex) {
     plantImg.style.height = '50px';
     plantImg.style.top = '5px';
     plantImg.style.left = '5px';
+    plantEl.setAttribute('data-type', tipoDaPlanta);
+
 
     lot.appendChild(plantImg);
   }, tempoCrescimento * 1000);

@@ -354,7 +354,6 @@ function checkAdubo() {
   }
 
   // Verifica se a planta roubada não é milho ou trigo
-  const plantType = plantElement.getAttribute('data-type');
   if (plantType !== 'milho' && plantType !== 'trigo') {
     const seedCost = seedPrices[plantType];
     const refund = seedCost * 0.10; // 10% de reembolso

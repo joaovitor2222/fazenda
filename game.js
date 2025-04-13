@@ -148,6 +148,7 @@ function plantSeed(lotIndex) {
   let fieldContainer = document.getElementById('field');
   let lots = fieldContainer.children;
   let lot = lots[lotIndex];
+  const plantEl = document.createElement('img');
 
   if (!lot) {
     console.error(`Erro: Lote ${lotIndex} não encontrado.`);

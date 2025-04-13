@@ -345,11 +345,11 @@ function checkAdubo() {
   // Função para lidar com o roubo de uma planta
   function onPlantStolen(plantElement) {
   // Obtém o índice do lote a partir do atributo data-lot
-  const lotIndex = parseInt(plantElement.getAttribute('data-lot'));
+  const plantType = plantElement.getAttribute('data-type');
+  const lotIndex = parseInt(plantElement.getAttribute('data-lot'), 10);
 
-  // Se por algum motivo não conseguir recuperar o índice, aborta
   if (isNaN(lotIndex)) {
-    console.log('Erro: Não foi possível identificar o lote da planta.');
+    console.error('Erro: Índice do lote inválido.');
     return;
   }
 

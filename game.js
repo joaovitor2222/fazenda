@@ -426,11 +426,20 @@ const stealingInterval = setInterval(() => {
   });
 
   // Se existir alguma planta válida, rouba uma aleatória
-  if (targetablePlants.length > 0) {
-    const plantToSteal = targetablePlants[Math.floor(Math.random() * targetablePlants.length)];
-    plantToSteal.remove();
-    alert('Um ladrão roubou uma planta!');
+if (targetablePlants.length > 0) {
+  const plantToSteal = targetablePlants[Math.floor(Math.random() * targetablePlants.length)];
+  const plantType = plantToSteal.getAttribute('data-type');
+  // Se não for trigo ou milho, aplica reembolso de 10%
+  if (plantType !== 'trigo' && plantType !== 'milho') {
+    const seedCost = seedPrices[plantType];   // Certifique-se de que seedPrices esteja definido corretamente
+    const refund = seedCost * 0.10;
+    updateCoins(refund);
+    alert(`Um ladrão roubou sua planta de ${plantType}! Você recebeu ${refund} moedas de reembolso!`);
+  } else {
+    alert('Um ladrão tentou roubar sua planta de trigo/milho, mas foi ignorado!');
   }
+  plantToSteal.remove();
+}
 }, 10000); // 10 segundos
 }
 

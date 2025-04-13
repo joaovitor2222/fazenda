@@ -203,6 +203,9 @@ plantImg.style.left = '5px';
 plantImg.classList.add("plant");      // Verifique aqui
 plantImg.setAttribute('data-type', plantType);
 plantImg.setAttribute('data-lot', lotIndex);
+  
+console.log("Elemento criado:", plantImg.outerHTML);
+  
 lot.appendChild(plantImg);
 
   }, tempoCrescimento * 1000);

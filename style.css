@@ -181,17 +181,21 @@ body {
     border-radius: 50%; /* A imagem também fica redonda */
   }
   
-  #aduboTimerContainer {
+#aduboTimerContainer {
   width: 300px;
   height: 20px;
   border: 1px solid #aaa;
-  background-color: #ccc;
+  background-color: #ccc; /* Fundo cinza */
   margin: 10px auto;
-  display: none; /* Inicialmente escondida */
+  display: none;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 #aduboTimerBar {
   height: 100%;
-  background-color: #76c7c0;
-  width: 0%;
+  width: 100%;
+  background-color: #3498db; /* Azul bonito */
+  transition: width 0.1s linear;
 }
+

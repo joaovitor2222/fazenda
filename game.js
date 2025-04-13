@@ -371,8 +371,11 @@ function checkAdubo() {
   field[lotIndex].grown = false;
   let lot = document.getElementById('field').children[lotIndex];
   if (lot) {
-    lot.innerHTML = ''; // Remove o conteúdo (imagem da planta)
+    lot.innerHTML = '';           // Remove o conteúdo (a imagem da planta)
     lot.classList.remove('planted');
+    if (lot.classList.contains('planted')) {
+      console.error(`Erro: A classe "planted" não foi removida do lote ${lotIndex}.`);
+    }
   }
 }
 

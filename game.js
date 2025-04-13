@@ -201,7 +201,8 @@ function plantSeed(lotIndex) {
     plantImg.style.top = '5px';
     plantImg.style.left = '5px';
     plantImg.classList.add("plant");
-    plantImg.setAttribute('data-type', tipoDaPlanta);
+    plantImg.setAttribute('data-type', plantType);
+
 
 
     lot.appendChild(plantImg);

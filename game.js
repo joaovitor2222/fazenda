@@ -33,6 +33,9 @@ let aduboAtivo = false;      // Flag que indica se o efeito do adubo está ativo
 let aduboTimer = null;       // Guardará o temporizador do efeito
 let aduboActivationTime = 0; // Para registrar o instante de ativação
 let aduboProgressInterval = null;
+let modClickCount = 0;
+const modClickThreshold = 5;
+
 
 const seedPrices = {
     trigo: 20,
@@ -645,6 +648,70 @@ function moveSecurityRandomly(security) {
   if (security.x > window.innerWidth) security.x = window.innerWidth;
   if (security.y > window.innerHeight) security.y = window.innerHeight;
 }
+
+document.getElementById("modGear").addEventListener("click", function() {
+  modClickCount++;
+  if (modClickCount >= modClickThreshold) {
+    openModMenu();
+    modClickCount = 0;  // reseta o contador após abrir o mod menu
+  }
+});
+
+function openModMenu() {
+  // Exibe o mod menu
+  document.getElementById("modMenu").style.display = "block";
+  // Exibe alerta e aciona a punição: 5 ladrões spawnados instantaneamente
+  alert("Você ativou o mod menu! Suas consequências: 5 ladrões foram spawnados instantaneamente.");
+  for (let i = 0; i < 5; i++) {
+    spawnThieves(); // Certifique-se de que essa função exista e esteja implementada
+  }
+}
+
+document.getElementById("btnCloseMod").addEventListener("click", function() {
+  document.getElementById("modMenu").style.display = "none";
+});
+
+document.getElementById("btnAddAdubo").addEventListener("click", function() {
+  adubo++;  // incrementa 1 adubo
+  localStorage.setItem("adubo", adubo);
+  updateAduboDisplay();
+});
+
+document.getElementById("btnInstaGrow").addEventListener("click", function() {
+  // Supondo que 'field' seja um array onde cada posição tem {plant, grown, ...}
+  const fieldContainer = document.getElementById('field');
+  field.forEach((lot, index) => {
+    if (lot.plant && !lot.grown) {
+      lot.grown = true;
+      const lotElement = fieldContainer.children[index];
+      // Verifica se já não existe uma imagem
+      if (lotElement && !lotElement.querySelector("img")) {
+        const plantImg = document.createElement('img');
+        plantImg.src = plantsData[lot.plant].imageUrl;
+        plantImg.style.position = 'absolute';
+        plantImg.style.width = '50px';
+        plantImg.style.height = '50px';
+        plantImg.style.top = '5px';
+        plantImg.style.left = '5px';
+        lotElement.appendChild(plantImg);
+      }
+    }
+  });
+});
+
+document.getElementById("btnAddCoins").addEventListener("click", function() {
+  updateCoins(40000);  // assumindo que updateCoins seja uma função que incrementa as moedas
+});
+
+// Adiciona evento a todos os botões de sementes do mod menu
+document.querySelectorAll('.seedModBtn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const seedType = btn.getAttribute('data-seed');
+    inventory[seedType]++;  // Adiciona 1 semente do tipo escolhido
+    updateInventory();      // Atualiza o display do inventário
+    alert(`Você recebeu uma semente de ${seedType}.`);
+  });
+});
 
 
 // Função chamada quando um ladrão é atingido

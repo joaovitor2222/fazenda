@@ -346,8 +346,7 @@ function checkAdubo() {
   }
   
   // Função para lidar com o roubo de uma planta
-  function onPlantStolen(plantElement) {
-  // Obtém o índice do lote a partir do atributo data-lot
+function onPlantStolen(plantElement) {
   const plantType = plantElement.getAttribute('data-type');
   const lotIndex = parseInt(plantElement.getAttribute('data-lot'), 10);
 
@@ -356,28 +355,29 @@ function checkAdubo() {
     return;
   }
 
-  // Verifica se a planta roubada não é milho ou trigo
   if (plantType !== 'milho' && plantType !== 'trigo') {
     const seedCost = seedPrices[plantType];
-    const refund = seedCost * 0.10; // 10% de reembolso
+    const refund = seedCost * 0.10;
     updateCoins(refund);
     alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
   } else {
     alert('Os ladrões ignoraram suas plantas de milho/trigo.');
   }
 
-  // Atualiza o estado do lote: remove a planta e limpa o DOM
   field[lotIndex].plant = null;
   field[lotIndex].grown = false;
-  let lot = document.getElementById('field').children[lotIndex];
+
+  let lot = plantElement.parentNode;
   if (lot) {
-    lot.innerHTML = '';           // Remove o conteúdo (a imagem da planta)
+    lot.innerHTML = '';
     lot.classList.remove('planted');
+
     if (lot.classList.contains('planted')) {
       console.error(`Erro: A classe "planted" não foi removida do lote ${lotIndex}.`);
     }
   }
 }
+
 
 
 function spawnThieves() {

@@ -314,73 +314,79 @@ function checkAdubo() {
   }
   
   // Função para mover os ladrões
-  function moveThieves() {
-    thieves.forEach(thief => {
-      let closestPlant = null;
-      let minDistance = Infinity;
-      let plantToSteal = null;
-  
-      // Verifica as plantas e escolhe a mais próxima ou mais valiosa
-      for (const [plantType, position] of Object.entries(plantPositions)) {
-        // Só considera plantas que estão plantadas e são "prontas para roubo"
-        if (position.grown && !position.stolen && field[position.x] && field[position.y]) {
-          let dist = distance(thief.x, thief.y, position.x, position.y);
-          
-          // Prioriza a planta mais cara ou mais próxima
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestPlant = position;
-            plantToSteal = plantType;
-          }
-        }
-      }
-  
-      // Move o ladrão em direção à planta escolhida
-      if (closestPlant) {
-        thief.x += (closestPlant.x - thief.x) * 0.1; // Movimento gradual em direção à planta
-        thief.y += (closestPlant.y - thief.y) * 0.1;
-  
-        // Se o ladrão chega na planta
-        if (distance(thief.x, thief.y, closestPlant.x, closestPlant.y) < 5) {
-          onPlantStolen(plantToSteal);
-          // Remove o ladrão após roubo
-          thieves = thieves.filter(t => t !== thief);
-        }
+function moveThieves() {
+  thieves.forEach(thief => {
+    // Busca todos os elementos de planta atualmente no campo
+    const allPlants = Array.from(document.querySelectorAll('.plant'));
+    let closestPlant = null;
+    let minDistance = Infinity;
+    
+    // Percorre cada planta para achar a mais próxima
+    allPlants.forEach(plant => {
+      // Obtém a posição da planta na tela
+      const rect = plant.getBoundingClientRect();
+      // Considera as coordenadas (x, y) do topo esquerdo; pode ser aprimorado para o centro da imagem
+      const plantX = rect.left;
+      const plantY = rect.top;
+      const d = distance(thief.x, thief.y, plantX, plantY);
+      if (d < minDistance) {
+        minDistance = d;
+        closestPlant = plant;
       }
     });
-  }
+    
+    // Se encontrou uma planta, move o ladrão em direção a ela
+    if (closestPlant) {
+      const rect = closestPlant.getBoundingClientRect();
+      const targetX = rect.left;
+      const targetY = rect.top;
+      // Atualiza a posição do ladrão de forma gradual
+      thief.x += (targetX - thief.x) * 0.1;
+      thief.y += (targetY - thief.y) * 0.1;
+      // Atualiza a posição visual do ladrão
+      thief.element.style.left = `${thief.x}px`;
+      thief.element.style.top = `${thief.y}px`;
+      // Quando o ladrão estiver bem próximo da planta, realiza o roubo
+      if (distance(thief.x, thief.y, targetX, targetY) < 5) {
+        onPlantStolen(closestPlant);
+        // Remove o ladrão do array e do DOM
+        thieves = thieves.filter(t => t !== thief);
+        thief.element.remove();
+      }
+    }
+  });
+}
+
   
   // Função para lidar com o roubo de uma planta
 function onPlantStolen(plantElement) {
-  const plantType = plantElement.getAttribute('data-type');
-  const lotIndex = parseInt(plantElement.getAttribute('data-lot'), 10);
-
+  // Obtém o índice do lote a partir do atributo data-lot
+  const lotIndex = parseInt(plantElement.getAttribute('data-lot'));
+  
+  // Se não conseguir recuperar o índice, aborta
   if (isNaN(lotIndex)) {
-    console.error('Erro: Índice do lote inválido.');
+    console.log('Erro: Não foi possível identificar o lote da planta.');
     return;
   }
-
+  
+  // Recupera o tipo da planta a partir do atributo
+  const plantType = plantElement.getAttribute('data-type');
   if (plantType !== 'milho' && plantType !== 'trigo') {
     const seedCost = seedPrices[plantType];
-    const refund = seedCost * 0.10;
+    const refund = seedCost * 0.10; // 10% de reembolso
     updateCoins(refund);
     alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
   } else {
     alert('Os ladrões ignoraram suas plantas de milho/trigo.');
   }
-
+  
+  // Atualiza o estado do lote: remove a planta e limpa o DOM
   field[lotIndex].plant = null;
-  field[lotIndex].timer = null;
   field[lotIndex].grown = false;
-
-  let lot = plantElement.parentNode;
+  let lot = document.getElementById('field').children[lotIndex];
   if (lot) {
-  lot.classList.remove('planted'); // primeiro remove a classe
-  lot.innerHTML = ''; // depois limpa o conteúdo
-
-    if (lot.classList.contains('planted')) {
-      console.error(`Erro: A classe "planted" não foi removida do lote ${lotIndex}.`);
-    }
+    lot.innerHTML = ''; // Remove o conteúdo (imagem da planta)
+    lot.classList.remove('planted');
   }
 }
 
@@ -392,76 +398,63 @@ function spawnThieves() {
     return;
   }
   
-  // Obtenha o elemento do campo e suas dimensões
+  // Obtém o elemento do campo e suas dimensões
   const fieldEl = document.getElementById('field');
   const fieldWidth = fieldEl.offsetWidth;
-  // Podemos começar os ladrões do topo (y=0)
-  const initialY = 0;
   
-  // Define uma posição aleatória em X dentro do campo
-  const initialX = Math.random() * (fieldWidth - 30); // subtrai 30 para evitar que ultrapasse a borda (pois o ladrão tem 30px de largura)
-
-  // Cria um objeto para o ladrão
+  // Posiciona o ladrão no topo (y = 0) com X aleatório
+  const initialY = 0;
+  const initialX = Math.random() * (fieldWidth - 30); // 30px para não ultrapassar a borda
+  
   let thief = {
     x: initialX,
     y: initialY,
     element: null
   };
-
-  // Cria o elemento visual do ladrão e configura estilos
+  
+  // Cria o elemento visual do ladrão
   const thiefEl = document.createElement('div');
   thiefEl.classList.add('thief');
+  thiefEl.style.position = 'absolute';
   thiefEl.style.left = `${initialX}px`;
   thiefEl.style.top = `${initialY}px`;
-
-  // Adiciona o event listener para quando o ladrão for clicado (o que dá a recompensa e remove o ladrão)
+  
+  // Ao clicar no ladrão, concede a recompensa e remove-o
   thiefEl.addEventListener('click', function() {
     updateCoins(thiefReward);
     alert(`Você recebeu ${thiefReward} moedas por clicar no ladrão!`);
-    // Remove o elemento do DOM
     thiefEl.remove();
-    // Remove o ladrão do array
     thieves = thieves.filter(t => t !== thief);
   });
-
-  // Armazena a referência do elemento no objeto
+  
+  // Associa o elemento com o objeto ladrão e adiciona-o ao campo
   thief.element = thiefEl;
-
-  // Adiciona o ladrão no campo e no array global
   fieldEl.appendChild(thiefEl);
   thieves.push(thief);
-  // A cada 10 segundos o ladrão tenta roubar uma planta (exceto trigo e milho)
-const stealingInterval = setInterval(() => {
-  // Se o ladrão já foi removido (não tá mais no array ou no DOM), para a função
-  if (!thieves.includes(thief) || !document.body.contains(thief.element)) {
-    clearInterval(stealingInterval);
-    return;
-  }
-
-  // Seleciona todas as plantas que não sejam trigo ou milho
-  const allPlants = Array.from(document.querySelectorAll('.plant'));
-  const targetablePlants = allPlants.filter(p => {
-    const type = p.getAttribute('data-type');
-    return type !== 'trigo' && type !== 'milho';
-  });
-
-  // Se existir alguma planta válida, rouba uma aleatória
-if (targetablePlants.length > 0) {
-  const plantToSteal = targetablePlants[Math.floor(Math.random() * targetablePlants.length)];
-  const plantType = plantToSteal.getAttribute('data-type');
-  // Se não for trigo ou milho, aplica reembolso de 10%
-  if (plantType !== 'trigo' && plantType !== 'milho') {
-    const seedCost = seedPrices[plantType];   // Certifique-se de que seedPrices esteja definido corretamente
-    const refund = seedCost * 0.10;
-    updateCoins(refund);
-    alert(`Um ladrão roubou sua planta de ${plantType}! Você recebeu ${refund} moedas de reembolso!`);
-  } else {
-    alert('Um ladrão tentou roubar sua planta de trigo/milho, mas foi ignorado!');
-  }
-  plantToSteal.remove();
+  
+  // Intervalo para o ladrão tentar roubar uma planta a cada 10 segundos
+  const stealingInterval = setInterval(() => {
+    // Caso o ladrão já tenha sido removido, interrompe o intervalo
+    if (!thieves.includes(thief) || !document.body.contains(thief.element)) {
+      clearInterval(stealingInterval);
+      return;
+    }
+    
+    // Seleciona todas as plantas que não sejam "trigo" ou "milho"
+    const allPlants = Array.from(document.querySelectorAll('.plant'));
+    const targetablePlants = allPlants.filter(p => {
+      const type = p.getAttribute('data-type');
+      return type !== 'trigo' && type !== 'milho';
+    });
+    
+    if (targetablePlants.length > 0) {
+      // Escolhe aleatoriamente uma planta dentre as válidas
+      const plantToSteal = targetablePlants[Math.floor(Math.random() * targetablePlants.length)];
+      onPlantStolen(plantToSteal);
+    }
+  }, 10000); // a cada 10 segundos
 }
-}, 10000); // 10 segundos
-}
+
 
 
 function updateHighscore() {

@@ -216,6 +216,11 @@ lot.appendChild(plantImg);
 function sellPlant(lotIndex) {
   const plant = field[lotIndex].plant;
 
+  let basePrice = plantsData[plantType].sellPrice;
+
+  let bonus = getCoinBonus();
+  let finalPrice = basePrice * (1 + bonus);  // Aumenta o preço da venda com o bônus
+
   if (!plant || !field[lotIndex].grown) {
       alert('Não há planta pronta para vender neste lote.');
       return;
@@ -233,7 +238,8 @@ function sellPlant(lotIndex) {
   field[lotIndex].plant = null; // Reseta a planta no campo
   field[lotIndex].timer = null; // Limpa o temporizador da planta
   field[lotIndex].grown = false; // Reseta o status de "pronta"
-  
+
+  console.log(`Você vendeu um ${plant} por ${finalPrice.toFixed(2)} moedas com ${hiredSecurityCount} seguranças contratados.`);
   alert(`Você vendeu uma planta de ${plant} por ${plantValue} moedas.`);
 
   // Remove a classe de "pronta para vender" e desativa o clique
@@ -242,9 +248,8 @@ function sellPlant(lotIndex) {
   lot.classList.remove('planted'); // Remove a classe que indica que o lote foi plantado
   lot.classList.remove('ready-to-sell'); // Remove a classe indicando que está pronto para ser colhido
 
-  let bonus = getCoinBonus();
-  let finalPrice = basePrice * (1 + bonus);  // Aumenta o preço da venda com o bônus
-  console.log(`Você vendeu um ${plantType} por ${finalPrice.toFixed(2)} moedas com ${hiredSecurityCount} seguranças contratados.`);
+
+
   return finalPrice;  // Retorna o valor final da venda
 }
 
@@ -365,6 +370,7 @@ function onPlantStolen(plantElement) {
   }
 
   field[lotIndex].plant = null;
+  field[lotIndex].timer = null;
   field[lotIndex].grown = false;
 
   let lot = plantElement.parentNode;

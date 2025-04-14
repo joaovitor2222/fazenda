@@ -183,13 +183,28 @@ function onMemoryGameComplete() {
     
     // Obtém o total atual de adubos do localStorage (ou 0 se não houver)
     let aduboAtual = parseInt(localStorage.getItem('adubo')) || 0;
-    // Soma os adubos ganhos, limitando o total a no máximo 5
-    aduboAtual = Math.min(aduboAtual + aduboAward, 5);
+    // Recupera o highscore
+let highscore = parseInt(localStorage.getItem('highscore')) || 0;
+
+// Função que define o limite de adubos com base no highscore
+function getAduboLimit(highscore) {
+  if (highscore <= 300000) return 5;
+  else if (highscore <= 500000) return 6;
+  else if (highscore <= 750000) return 7;
+  else return 8;
+}
+
+let aduboMaximo = getAduboLimit(highscore);
+aduboAtual = Math.min(aduboAtual + aduboAward, aduboMaximo);
+    
     // Atualiza o localStorage
     localStorage.setItem('adubo', aduboAtual);
     
     alert(`Você completou o minigame em ${timeElapsed.toFixed(2)} segundos e ganhou ${aduboAward} adubo(s)! Total de adubos: ${aduboAtual}`);
   }
+
+
+
 
     createMemoryCards();
   </script>

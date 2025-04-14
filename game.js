@@ -369,8 +369,8 @@ function onPlantStolen(plantElement) {
 
   let lot = plantElement.parentNode;
   if (lot) {
-    lot.innerHTML = '';
-    lot.classList.remove('planted');
+  lot.classList.remove('planted'); // primeiro remove a classe
+  lot.innerHTML = ''; // depois limpa o conteúdo
 
     if (lot.classList.contains('planted')) {
       console.error(`Erro: A classe "planted" não foi removida do lote ${lotIndex}.`);

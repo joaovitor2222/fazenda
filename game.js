@@ -315,6 +315,9 @@ function checkAdubo() {
   
   // Função para mover os ladrões
 function moveThieves() {
+  // Remove do array os ladrões que já tiveram seu elemento removido
+  thieves = thieves.filter(thief => thief.element !== null && typeof thief.element !== 'undefined');
+
   thieves.forEach(thief => {
     // Busca todos os elementos de planta atualmente no campo
     const allPlants = Array.from(document.querySelectorAll('.plant'));
@@ -323,9 +326,8 @@ function moveThieves() {
     
     // Percorre cada planta para achar a mais próxima
     allPlants.forEach(plant => {
-      // Obtém a posição da planta na tela
       const rect = plant.getBoundingClientRect();
-      // Considera as coordenadas (x, y) do topo esquerdo; pode ser aprimorado para o centro da imagem
+      // Usamos a posição do canto superior esquerdo; você pode aprimorar para usar o centro da imagem
       const plantX = rect.left;
       const plantY = rect.top;
       const d = distance(thief.x, thief.y, plantX, plantY);
@@ -340,22 +342,28 @@ function moveThieves() {
       const rect = closestPlant.getBoundingClientRect();
       const targetX = rect.left;
       const targetY = rect.top;
+      
       // Atualiza a posição do ladrão de forma gradual
       thief.x += (targetX - thief.x) * 0.1;
       thief.y += (targetY - thief.y) * 0.1;
-      // Atualiza a posição visual do ladrão
-      thief.element.style.left = `${thief.x}px`;
-      thief.element.style.top = `${thief.y}px`;
-      // Quando o ladrão estiver bem próximo da planta, realiza o roubo
+      
+      // Verifica se o elemento ainda existe antes de atualizar a posição
+      if (thief.element) {
+        thief.element.style.left = `${thief.x}px`;
+        thief.element.style.top = `${thief.y}px`;
+      }
+      
+      // Se o ladrão estiver muito próximo da planta, realiza o roubo
       if (distance(thief.x, thief.y, targetX, targetY) < 5) {
         onPlantStolen(closestPlant);
         // Remove o ladrão do array e do DOM
         thieves = thieves.filter(t => t !== thief);
-        thief.element.remove();
+        if (thief.element) thief.element.remove();
       }
     }
   });
 }
+
 
   
   // Função para lidar com o roubo de uma planta

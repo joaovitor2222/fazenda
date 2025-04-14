@@ -216,7 +216,7 @@ lot.appendChild(plantImg);
 function sellPlant(lotIndex) {
   const plant = field[lotIndex].plant;
 
-  let basePrice = plantsData[plantType].sellPrice;
+  let basePrice = plantsData[plant].sellPrice;
 
   let bonus = getCoinBonus();
   let finalPrice = basePrice * (1 + bonus);  // Aumenta o preço da venda com o bônus

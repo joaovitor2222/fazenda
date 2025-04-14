@@ -36,7 +36,7 @@ let aduboProgressInterval = null;
 let modClickCount = 0;
 const modClickThreshold = 5;
 
-
+const basePrice = 35; // ajuste esse valor conforme a lógica do jogo
 
 const seedPrices = {
     trigo: 20,

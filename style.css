@@ -199,3 +199,23 @@ body {
   transition: width 0.1s linear;
 }
 
+@media (max-width: 768px) {
+  #gameScreen button {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    font-size: 1.1em;
+  }
+
+  #inventoryItems {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #inventoryItems .seed {
+    width: 90%;
+    margin-bottom: 10px;
+  }
+}
+
+

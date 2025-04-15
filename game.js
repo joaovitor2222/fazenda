@@ -90,6 +90,21 @@ function initializeField() {
   }
 }
 
+(function() {
+  let alertShown = false;
+
+  function checkOrientation() {
+    if (window.innerHeight > window.innerWidth && !alertShown) {
+      alert("Para uma melhor experiência, utilize o jogo no modo paisagem (horizontal).");
+      alertShown = true;
+    }
+  }
+
+  window.addEventListener("load", checkOrientation);
+  window.addEventListener("resize", checkOrientation);
+})();
+
+
 function buySeed(plantType) {
   if (coins < plantsData[plantType].price) {
     alert('Você não tem moedas suficientes!');

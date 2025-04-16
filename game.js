@@ -18,6 +18,7 @@ let plantsData = {
   morango: { price: 1000, sellPrice: 2500, growTime: 180, imageUrl: 'https://png.pngtree.com/png-vector/20231114/ourmid/pngtree-strawberry-background-diet-strawberries-png-image_10471262.png' },
   maca: { price: 2500, sellPrice: 6000, growTime: 300, imageUrl: 'https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png' },
   macaverde: { price: 12000, sellPrice: 50000, growTime: 720, imageUrl: 'https://png.pngtree.com/png-clipart/20230930/original/pngtree-big-green-apple-png-image_13022349.png' },
+  melancia: { price: 28000, sellPrice: 200000, growTime: 1440, imageUrl: 'https://png.pngtree.com/png-clipart/20240925/original/pngtree-whole-watermelon-fruit-png-image_16089036.png'},
 };
 
 let plantPositions = {}; // Armazena a posição das plantas
@@ -44,7 +45,8 @@ const seedPrices = {
     framboesa: 200,
     morango: 1000,
     maca: 2500,
-    macaverde: 12000
+    macaverde: 12000,
+    melancia: 28000
   };
   
   // Valores de venda das plantas
@@ -54,7 +56,8 @@ const seedPrices = {
     framboesa: 450,
     morango: 2500,
     maca: 6000,
-    macaverde: 50000
+    macaverde: 50000,
+    melancia: 200000
   };
 
 
@@ -179,7 +182,7 @@ function plantSeed(lotIndex) {
     return;
   }
 
-  let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde):');
+  let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde, melancia):');
   if (!plantsData[plantType]) {
     alert('Planta inválida!');
     return;

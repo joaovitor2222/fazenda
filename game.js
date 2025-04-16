@@ -37,6 +37,7 @@ let aduboActivationTime = 0; // Para registrar o instante de ativação
 let aduboProgressInterval = null;
 let modClickCount = 0;
 const modClickThreshold = 5;
+let macaverdePlantCount = 0;
 
 const basePrice = 35; // ajuste esse valor conforme a lógica do jogo
 
@@ -190,6 +191,20 @@ function plantSeed(lotIndex) {
     return;
   }
 
+    // Nova regra: se for melancia, verificar highscore e plantios de macaverde
+  if (plantType === 'melancia') {
+    // Verifica se o recorde é pelo menos 300 mil
+    if (parseInt(highscore) < 300000) {
+      alert('Você precisa ter um recorde de pelo menos 300 mil moedas para plantar melancia!');
+      return;
+    }
+    // Verifica se já plantou macaverde pelo menos 5 vezes
+    if (macaverdePlantCount < 5) {
+      alert('Você precisa plantar macã verde pelo menos 5 vezes para desbloquear a melancia!');
+      return;
+    }
+  }
+
   if (inventory[plantType] === 0) {
     alert('Você não tem sementes dessa planta!');
     return;
@@ -200,6 +215,11 @@ function plantSeed(lotIndex) {
   field[lotIndex].plant = plantType;
   field[lotIndex].grown = false; 
 
+  if (plantType === 'macaverde') {
+    macaverdePlantCount++;
+    console.log(`Macã verde plantada ${macaverdePlantCount} vez(es).`);
+  }
+  
   lot.classList.add('planted'); 
 
   // Tempo de crescimento padrão

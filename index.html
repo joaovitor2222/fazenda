@@ -97,5 +97,12 @@
   </div>
 
   <script src="game.js"></script>
+  <script>
+  // Verifica se o alerta já foi exibido nesta sessão
+  if (!sessionStorage.getItem("alertShown")) {
+    alert("Recomendo você ler o que está escrito na parte de baixo do jogo e olhar o tutorial para saber informações das plantas e pegar adubo grátis no minigame!");
+    sessionStorage.setItem("alertShown", "true");
+  }
+  </script>
 </body>
 </html>

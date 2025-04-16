@@ -8,7 +8,8 @@ let inventory = {
   framboesa: 0,
   morango: 0,
   maca: 0,
-  macaverde: 0
+  macaverde: 0,
+  melancia: 0
 };
 
 let plantsData = {
@@ -160,6 +161,7 @@ function updateInventory() {
   document.getElementById('morango-count').innerText = inventory.morango;
   document.getElementById('maca-count').innerText = inventory.maca;
   document.getElementById('macaverde-count').innerText = inventory.macaverde;
+  document.getElementById('melancia-count').innerText = inventory.melancia;
 }
 
 function plantSeed(lotIndex) {

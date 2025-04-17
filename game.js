@@ -42,6 +42,35 @@ let aduboProgressInterval = null;
 let modClickCount = 0;
 const modClickThreshold = 5;
 let macaverdePlantCount = 0;
+// Nível de redução de tempo (% de redução no tempo de crescimento)
+// 0 = 50% (base), 1 = 60%, 2 = 70%, 3 = 80%
+let aduboReductionLevel = 0;
+
+// Nível de duração do adubo (em minutos)
+// 0 = 5, 1 = 6, 2 = 7, 3 = 9, 4 = 10, 5 = 12
+let aduboDurationLevel = 0;
+
+// percentuais de redução (fator multiplicativo)
+const reductionFactors = [
+  0.50,  // base
+  0.40,  // nível 1 (60% redução)
+  0.30,  // nível 2 (70% redução)
+  0.20   // nível 3 (80% redução)
+];
+
+// durações em milissegundos para cada nível
+const durationValues = [
+  5 * 60 * 1000,   // base: 5 min
+  6 * 60 * 1000,   // nível 1: 6 min
+  7 * 60 * 1000,   // nível 2: 7 min
+  9 * 60 * 1000,   // nível 3: 9 min
+  10 * 60 * 1000,  // nível 4: 10 min
+  12 * 60 * 1000   // nível 5: 12 min
+];
+
+// custos de cada nível
+const reductionCosts = [1000, 10000, 100000];
+const durationCosts  = [2000, 4000, 10000, 50000, 120000];
 
 const basePrice = 35; // ajuste esse valor conforme a lógica do jogo
 
@@ -86,6 +115,8 @@ function startGame() {
   initializeField();
   updateInventory();
   checkAdubo();
+  renderReductionUpgradeButton();
+  renderDurationUpgradeButton();
 }
 
 function updateAduboDisplay() {
@@ -129,6 +160,72 @@ function buySeed(plantType) {
   updateInventory();
   document.getElementById('coins').innerText = coins;
 }
+
+function buyAduboReductionUpgrade() {
+  const next = aduboReductionLevel + 1;
+  if (next >= reductionFactors.length) return; // já no nível máximo
+  const cost = reductionCosts[next - 1];
+  if (coins < cost) {
+    alert('Você não tem moedas suficientes para esse upgrade de redução!');
+    return;
+  }
+  coins -= cost;
+  updateCoinsDisplay();
+  aduboReductionLevel = next;
+  alert(`Upgrade de redução de tempo adquirido! Nível ${next} (${(reductionFactors[next]*100).toFixed(0)}% de tempo)`);
+
+  // Atualiza exibição de botões
+  renderReductionUpgradeButton();
+}
+
+function buyAduboDurationUpgrade() {
+  const next = aduboDurationLevel + 1;
+  if (next >= durationValues.length) return; // já no nível máximo
+  const cost = durationCosts[next - 1];
+  if (coins < cost) {
+    alert('Você não tem moedas suficientes para esse upgrade de duração!');
+    return;
+  }
+  coins -= cost;
+  updateCoinsDisplay();
+  aduboDurationLevel = next;
+  alert(`Upgrade de duração de adubo adquirido! Nível ${next} (${durationValues[next] / 60000} min)`);
+
+  // Atualiza exibição de botões
+  renderDurationUpgradeButton();
+}
+
+function renderReductionUpgradeButton() {
+  const container = document.getElementById('reduction-upgrade-container');
+  const next = aduboReductionLevel + 1;
+  if (next >= reductionFactors.length) {
+    container.innerHTML = '<p>Redução no máximo</p>';
+  } else {
+    const cost = reductionCosts[next - 1];
+    container.innerHTML = `
+      <button onclick="buyAduboReductionUpgrade()">
+        Upgrade Redução de Tempo Nível ${next} (custa ${cost} moedas)
+      </button>
+    `;
+  }
+}
+
+function renderDurationUpgradeButton() {
+  const container = document.getElementById('duration-upgrade-container');
+  const next = aduboDurationLevel + 1;
+  if (next >= durationValues.length) {
+    container.innerHTML = '<p>Duração no máximo</p>';
+  } else {
+    const cost = durationCosts[next - 1];
+    const minutes = durationValues[next] / 60000;
+    container.innerHTML = `
+      <button onclick="buyAduboDurationUpgrade()">
+        Upgrade Duração Adubo Nível ${next} (${minutes} min) – custa ${cost} moedas
+      </button>
+    `;
+  }
+}
+
 
 
 function updateCoins(amount) {
@@ -245,9 +342,9 @@ if (!plantsData[plantType]) {
   // Tempo de crescimento padrão
   let tempoCrescimento = plantsData[plantType].growTime;
   // Se o adubo estiver ativo, reduzir o tempo em 50%
-  if (aduboAtivo) {
-    tempoCrescimento *= 0.5;
-  }
+if (aduboAtivo) {
+  tempoCrescimento *= reductionFactors[aduboReductionLevel];
+}
   
 setTimeout(() => {
   field[lotIndex].grown = true;
@@ -328,20 +425,19 @@ function useAdubo() {
   updateAduboDisplay();
 
   aduboAtivo = true;
-  aduboActivationTime = Date.now();
-  alert('Adubo ativado! Plantas que você plantar agora terão crescimento 50% mais rápido por 5 minutos.');
-  
-  // Exibe a barra do timer
-document.getElementById('aduboTimerContainer').style.display = 'block';
-document.getElementById('aduboTimerBar').style.width = '100%'; // Começa cheia
-aduboProgressInterval = setInterval(updateAduboTimerBar, 100);
+  const durationMs = durationValues[aduboDurationLevel];
+  alert(`Adubo ativado! Duração: ${durationMs/60000} min; redução: ${(reductionFactors[aduboReductionLevel]*100).toFixed(0)}%`);
 
-aduboTimer = setTimeout(() => {
-  aduboAtivo = false;
-  clearInterval(aduboProgressInterval);
-  document.getElementById('aduboTimerContainer').style.display = 'none'; // Esconde a barra
-  alert('O efeito do adubo expirou!');
-}, 300000);
+  document.getElementById('aduboTimerContainer').style.display = 'block';
+  document.getElementById('aduboTimerBar').style.width = '100%';
+  aduboProgressInterval = setInterval(() => updateAduboTimerBar(durationMs), 100);
+
+  aduboTimer = setTimeout(() => {
+    aduboAtivo = false;
+    clearInterval(aduboProgressInterval);
+    document.getElementById('aduboTimerContainer').style.display = 'none';
+    alert('O efeito do adubo expirou!');
+  }, durationMs);
 }
 
 
@@ -354,11 +450,10 @@ function resetGame() {
     initGame(); // Re-inicia o jogo com as variáveis resetadas
   }
 
-function updateAduboTimerBar() {
-  const duration = 300000; // 5 minutos em ms
+function updateAduboTimerBar(totalDuration) {
   const elapsed = Date.now() - aduboActivationTime;
-  const percentRemaining = Math.max(0, 100 - (elapsed / duration * 100));
-  document.getElementById('aduboTimerBar').style.width = percentRemaining + '%';
+  const percent = Math.max(0, 100 - (elapsed / totalDuration * 100));
+  document.getElementById('aduboTimerBar').style.width = percent + '%';
 }
 
 function checkAdubo() {

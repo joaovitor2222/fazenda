@@ -425,6 +425,7 @@ function useAdubo() {
   updateAduboDisplay();
 
   aduboAtivo = true;
+  aduboActivationTime = Date.now();  
   const durationMs = durationValues[aduboDurationLevel];
   alert(`Adubo ativado! Duração: ${durationMs/60000} min; redução: ${(reductionFactors[aduboReductionLevel]*100).toFixed(0)}%`);
 

@@ -218,4 +218,8 @@ body {
   }
 }
 
+#reduction-locked-msg {
+  display: none;
+  color: red;
+}
 

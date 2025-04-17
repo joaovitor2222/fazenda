@@ -358,14 +358,21 @@ if (!plantsData[plantType]) {
   }
 
 if (plantType === 'macaverde') {
+  // Se for o primeiro plantio, libera a área de upgrades
   if (macaverdePlantCount === 0) {
     document.getElementById('upgrades').style.display = 'block';
-    alert("Quando você plantar 1 Maçã Verde, você poderá melhorar seu adubo! Os upgrades foram desbloqueados e estão na parte inferior da tela.");
+    alert("Você desbloqueou os upgrades de adubo! Olhe na parte inferior da tela.");
   }
 
+  // Incrementa o contador
   macaverdePlantCount++;
-  console.log(`Maçã verde plantada ${macaverdePlantCount} vez(es).`);
+  console.log(`Maçã Verde plantada ${macaverdePlantCount} vez(es).`);
+
+  // Atualiza os botões de upgrade imediatamente
+  renderReductionUpgradeButton();
+  renderDurationUpgradeButton();
 }
+
   
   lot.classList.add('planted'); 
 

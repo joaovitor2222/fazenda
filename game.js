@@ -195,11 +195,13 @@ function plantSeed(lotIndex) {
     return;
   }
 
-  let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde, melancia, banana, manga):');
-  if (!plantsData[plantType]) {
-    alert('Planta inválida!');
-    return;
-  }
+let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde, melancia, banana, manga):');
+plantType = plantType?.toLowerCase();
+
+if (!plantsData[plantType]) {
+  alert('Planta inválida!');
+  return;
+}
 
     // Nova regra: se for melancia, verificar highscore e plantios de macaverde
   if (plantType === 'melancia') {

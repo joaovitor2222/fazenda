@@ -111,7 +111,7 @@ function startGame() {
   document.getElementById('gameScreen').style.display = 'block';
   document.getElementById('playerNameDisplay').innerText = playerName;
   document.getElementById('highscore').innerText = highscore;
-  document.getElementById('upgrades').style.display = 'none';
+  document.getElementById('upgrades').style.display = 'block';
 
 
   initializeField();

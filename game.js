@@ -205,8 +205,18 @@ function buyAduboDurationUpgrade() {
 }
 
 function renderReductionUpgradeButton() {
+  // Exibe a mensagem de bloqueio se a Maçã Verde não foi plantada
+  if (macaverdePlantCount === 0) {
+    document.getElementById('reduction-locked-msg').style.display = 'block';
+    return;
+  } else {
+    document.getElementById('reduction-locked-msg').style.display = 'none';
+  }
+
+  // Agora, adicionamos o botão de upgrade ou uma mensagem caso tenha chegado ao máximo
   const container = document.getElementById('reduction-upgrade-container');
   const next = aduboReductionLevel + 1;
+  
   if (next >= reductionFactors.length) {
     container.innerHTML = '<p>Redução no máximo</p>';
   } else {
@@ -220,8 +230,16 @@ function renderReductionUpgradeButton() {
 }
 
 function renderDurationUpgradeButton() {
+  // Verifica se a Maçã Verde foi plantada, caso contrário, não permite renderizar o botão
+  if (macaverdePlantCount === 0) {
+    document.getElementById('duration-upgrade-container').innerHTML = '<p>Plante uma Maçã Verde para desbloquear este upgrade!</p>';
+    return;
+  }
+
+  // Renderiza o botão de upgrade de duração de adubo
   const container = document.getElementById('duration-upgrade-container');
   const next = aduboDurationLevel + 1;
+
   if (next >= durationValues.length) {
     container.innerHTML = '<p>Duração no máximo</p>';
   } else {
@@ -229,13 +247,11 @@ function renderDurationUpgradeButton() {
     const minutes = durationValues[next] / 60000;
     container.innerHTML = `
       <button onclick="buyAduboDurationUpgrade()">
-        Upgrade Duração Adubo Nível ${next} (${minutes} min) – custa ${cost} moedas
+        Upgrade Duração Adubo Nível ${next} (${minutes} min) – custa ${cost} moedas
       </button>
     `;
   }
 }
-
-
 
 function updateCoins(amount) {
     // Incrementa (ou decrementa) as moedas do jogador

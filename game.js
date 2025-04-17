@@ -176,8 +176,9 @@ function buyAduboReductionUpgrade() {
   aduboReductionLevel = next;
 
   const fator = reductionFactors[next]; // Ex: 0.6 (60% do tempo)
-  const crescimentoMaisRapido = Math.round((1 / fator) * 100 - 100);
-  alert(`Upgrade de redução de tempo adquirido! Nível ${next} — as plantas agora crescem ${crescimentoMaisRapido}% mais rápido!`);
+const crescimentoMaisRapido = Math.round((1 - fator) * 100);
+alert(`Upgrade de redução de tempo adquirido! Nível ${next} — as plantas agora crescem ${crescimentoMaisRapido}% mais rápido!`);
+
 
   // Atualiza exibição de botões
   renderReductionUpgradeButton();

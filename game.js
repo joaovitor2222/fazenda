@@ -9,7 +9,9 @@ let inventory = {
   morango: 0,
   maca: 0,
   macaverde: 0,
-  melancia: 0
+  melancia: 0,
+  banana: 0,
+  manga: 0
 };
 
 let plantsData = {
@@ -20,6 +22,8 @@ let plantsData = {
   maca: { price: 2500, sellPrice: 6000, growTime: 300, imageUrl: 'https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png' },
   macaverde: { price: 12000, sellPrice: 50000, growTime: 720, imageUrl: 'https://png.pngtree.com/png-clipart/20230930/original/pngtree-big-green-apple-png-image_13022349.png' },
   melancia: { price: 28000, sellPrice: 200000, growTime: 1440, imageUrl: 'https://png.pngtree.com/png-clipart/20240925/original/pngtree-whole-watermelon-fruit-png-image_16089036.png'},
+  banana:   { price:100,    sellPrice:210,    growTime:120,  imageUrl: 'https://assets.stickpng.com/images/580b57fcd9996e24bc43c133.png' },
+  manga:    { price:1000,   sellPrice:2200,   growTime:155,  imageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/047/665/062/small_2x/mango-image-transparent-background-png.png' },
 };
 
 let plantPositions = {}; // Armazena a posição das plantas
@@ -48,7 +52,9 @@ const seedPrices = {
     morango: 1000,
     maca: 2500,
     macaverde: 12000,
-    melancia: 28000
+    melancia: 28000,
+    banana: 100,
+    manga: 1000
   };
   
   // Valores de venda das plantas
@@ -59,7 +65,9 @@ const seedPrices = {
     morango: 2500,
     maca: 6000,
     macaverde: 50000,
-    melancia: 200000
+    melancia: 200000,
+    banana: 210,
+    manga: 2200
   };
 
 
@@ -185,7 +193,7 @@ function plantSeed(lotIndex) {
     return;
   }
 
-  let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde, melancia):');
+  let plantType = prompt('Escolha a planta (trigo, milho, framboesa, morango, maca, macaverde, melancia, banana, manga):');
   if (!plantsData[plantType]) {
     alert('Planta inválida!');
     return;
@@ -214,6 +222,14 @@ function plantSeed(lotIndex) {
   updateInventory();
   field[lotIndex].plant = plantType;
   field[lotIndex].grown = false; 
+
+    // Bônus especial: chance de ganhar adubo ao plantar manga
+  if (plantType === 'manga' && Math.random() < 0.30) {
+    adubo++; 
+    localStorage.setItem('adubo', adubo);
+    updateAduboDisplay();
+    alert('Sua manga generosa produziu 1 adubo extra!');
+  }
 
   if (plantType === 'macaverde') {
     macaverdePlantCount++;
@@ -418,15 +434,16 @@ function onPlantStolen(plantElement) {
   }
   
   // Recupera o tipo da planta a partir do atributo
-  const plantType = plantElement.getAttribute('data-type');
-  if (plantType !== 'milho' && plantType !== 'trigo') {
-    const seedCost = seedPrices[plantType];
-    const refund = seedCost * 0.10; // 10% de reembolso
-    updateCoins(refund);
-    alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
-  } else {
-    alert('Os ladrões ignoraram suas plantas de milho/trigo.');
-  }
+const plantType = plantElement.getAttribute('data-type');
+if (plantType !== 'milho' && plantType !== 'trigo' && plantType !== 'banana') {
+  const seedCost = seedPrices[plantType];
+  const refund = seedCost * 0.10; // 10% de reembolso
+  updateCoins(refund);
+  alert(`Você perdeu uma planta de ${plantType}, mas recebeu ${refund} moedas de reembolso.`);
+} else {
+  alert(`Os ladrões ignoraram sua planta de ${plantType}.`);
+}
+
   
   // Atualiza o estado do lote: remove a planta e limpa o DOM
   field[lotIndex].plant = null;

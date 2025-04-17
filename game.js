@@ -164,19 +164,25 @@ function buySeed(plantType) {
 function buyAduboReductionUpgrade() {
   const next = aduboReductionLevel + 1;
   if (next >= reductionFactors.length) return; // já no nível máximo
+
   const cost = reductionCosts[next - 1];
   if (coins < cost) {
     alert('Você não tem moedas suficientes para esse upgrade de redução!');
     return;
   }
+
   coins -= cost;
   updateCoinsDisplay();
   aduboReductionLevel = next;
-  alert(`Upgrade de redução de tempo adquirido! Nível ${next} (${(reductionFactors[next]*100).toFixed(0)}% de tempo)`);
+
+  const fator = reductionFactors[next]; // Ex: 0.6 (60% do tempo)
+  const crescimentoMaisRapido = Math.round((1 / fator) * 100 - 100);
+  alert(`Upgrade de redução de tempo adquirido! Nível ${next} — as plantas agora crescem ${crescimentoMaisRapido}% mais rápido!`);
 
   // Atualiza exibição de botões
   renderReductionUpgradeButton();
 }
+
 
 function buyAduboDurationUpgrade() {
   const next = aduboDurationLevel + 1;
@@ -427,7 +433,8 @@ function useAdubo() {
   aduboAtivo = true;
   aduboActivationTime = Date.now();  
   const durationMs = durationValues[aduboDurationLevel];
-  alert(`Adubo ativado! Duração: ${durationMs/60000} min; redução: ${(reductionFactors[aduboReductionLevel]*100).toFixed(0)}%`);
+  // Aqui você inverte para mostrar 60% mais rápido no lugar de 40%
+  alert(`Adubo ativado! Duração: ${durationMs/60000} min; redução: ${(100 - reductionFactors[aduboReductionLevel] * 100).toFixed(0)}%`);
 
   document.getElementById('aduboTimerContainer').style.display = 'block';
   document.getElementById('aduboTimerBar').style.width = '100%';
@@ -440,6 +447,7 @@ function useAdubo() {
     alert('O efeito do adubo expirou!');
   }, durationMs);
 }
+
 
 
 function resetGame() {

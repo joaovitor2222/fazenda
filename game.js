@@ -171,6 +171,8 @@ function updateInventory() {
   document.getElementById('maca-count').innerText = inventory.maca;
   document.getElementById('macaverde-count').innerText = inventory.macaverde;
   document.getElementById('melancia-count').innerText = inventory.melancia;
+  document.getElementById('manga-count').innerText  = inventory.manga;
+  document.getElementById('banana-count').innerText = inventory.banana;
 }
 
 function plantSeed(lotIndex) {
@@ -509,7 +511,7 @@ function spawnThieves() {
     const allPlants = Array.from(document.querySelectorAll('.plant'));
     const targetablePlants = allPlants.filter(p => {
       const type = p.getAttribute('data-type');
-      return type !== 'trigo' && type !== 'milho';
+      return type !== 'trigo' && type !== 'milho' && type !== 'banana';
     });
     
     if (targetablePlants.length > 0) {

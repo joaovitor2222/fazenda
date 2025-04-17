@@ -111,6 +111,8 @@ function startGame() {
   document.getElementById('gameScreen').style.display = 'block';
   document.getElementById('playerNameDisplay').innerText = playerName;
   document.getElementById('highscore').innerText = highscore;
+  document.getElementById('upgrades').style.display = 'none';
+
 
   initializeField();
   updateInventory();
@@ -339,10 +341,15 @@ if (!plantsData[plantType]) {
     alert('Sua manga generosa produziu 1 adubo extra!');
   }
 
-  if (plantType === 'macaverde') {
-    macaverdePlantCount++;
-    console.log(`Macã verde plantada ${macaverdePlantCount} vez(es).`);
+if (plantType === 'macaverde') {
+  if (macaverdePlantCount === 0) {
+    document.getElementById('upgrades').style.display = 'block';
+    alert("Quando você plantar 1 Maçã Verde, você poderá melhorar seu adubo! Os upgrades foram desbloqueados e estão na parte inferior da tela.");
   }
+
+  macaverdePlantCount++;
+  console.log(`Maçã verde plantada ${macaverdePlantCount} vez(es).`);
+}
   
   lot.classList.add('planted'); 
 

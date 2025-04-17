@@ -22,8 +22,8 @@ let plantsData = {
   maca: { price: 2500, sellPrice: 6000, growTime: 300, imageUrl: 'https://png.pngtree.com/png-vector/20240801/ourmid/pngtree-red-apple-with-leaf---fresh-fruit-clipart-illustration-png-image_13331189.png' },
   macaverde: { price: 12000, sellPrice: 50000, growTime: 720, imageUrl: 'https://png.pngtree.com/png-clipart/20230930/original/pngtree-big-green-apple-png-image_13022349.png' },
   melancia: { price: 28000, sellPrice: 200000, growTime: 1440, imageUrl: 'https://png.pngtree.com/png-clipart/20240925/original/pngtree-whole-watermelon-fruit-png-image_16089036.png'},
-  banana:   { price:100,    sellPrice:210,    growTime:120,  imageUrl: 'https://assets.stickpng.com/images/580b57fcd9996e24bc43c133.png' },
-  manga:    { price:1000,   sellPrice:2200,   growTime:155,  imageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/047/665/062/small_2x/mango-image-transparent-background-png.png' },
+  banana:   { price:100,    sellPrice:210,    growTime:90,  imageUrl: 'https://assets.stickpng.com/images/580b57fcd9996e24bc43c133.png' },
+  manga:    { price:1000,   sellPrice:2200,   growTime:160,  imageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/047/665/062/small_2x/mango-image-transparent-background-png.png' },
 };
 
 let plantPositions = {}; // Armazena a posição das plantas

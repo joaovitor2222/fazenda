@@ -384,13 +384,13 @@ if (aduboAtivo) {
 }
   
 field[lotIndex].growTimeout = setTimeout(() => {
-  // Só executa se a planta ainda existir e não foi colhida
-  if (!field[lotIndex].plant || field[lotIndex].grown) return;
+  // Verifica se a planta ainda está lá antes de crescer
+  const currentPlant = field[lotIndex].plant;
+  if (!currentPlant || field[lotIndex].grown) return;
 
   field[lotIndex].grown = true;
-  console.log(`Planta crescendo no lote ${lotIndex}`, lot);
 
-  let plantImg = document.createElement('img');
+  const plantImg = document.createElement('img');
   plantImg.src = plantsData[plantType].imageUrl;
   plantImg.style.position = 'absolute';
   plantImg.style.width = '50px';
@@ -400,14 +400,12 @@ field[lotIndex].growTimeout = setTimeout(() => {
   plantImg.classList.add("plant");
   plantImg.setAttribute('data-type', plantType);
   plantImg.setAttribute('data-lot', lotIndex);
-  
-  console.log("Elemento criado:", plantImg.outerHTML);
-  lot.appendChild(plantImg);
-  
-  // Limpa o timeout registrado
-  field[lotIndex].growTimeout = null;
 
+  lot.appendChild(plantImg);
+
+  field[lotIndex].growTimeout = null; // limpa a referência após uso
 }, tempoCrescimento * 1000);
+
 
 
 

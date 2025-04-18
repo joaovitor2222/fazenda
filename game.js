@@ -383,28 +383,32 @@ if (aduboAtivo) {
   tempoCrescimento *= reductionFactors[aduboReductionLevel];
 }
   
-setTimeout(() => {
+field[lotIndex].growTimeout = setTimeout(() => {
+  // Só executa se a planta ainda existir e não foi colhida
+  if (!field[lotIndex].plant || field[lotIndex].grown) return;
+
   field[lotIndex].grown = true;
   console.log(`Planta crescendo no lote ${lotIndex}`, lot);
 
-let plantImg = document.createElement('img');
-plantImg.src = plantsData[plantType].imageUrl;
-plantImg.style.position = 'absolute';
-plantImg.style.width = '50px';
-plantImg.style.height = '50px';
-plantImg.style.top = '5px';
-plantImg.style.left = '5px';
-plantImg.classList.add("plant");      // Verifique aqui
-plantImg.setAttribute('data-type', plantType);
-plantImg.setAttribute('data-lot', lotIndex);
+  let plantImg = document.createElement('img');
+  plantImg.src = plantsData[plantType].imageUrl;
+  plantImg.style.position = 'absolute';
+  plantImg.style.width = '50px';
+  plantImg.style.height = '50px';
+  plantImg.style.top = '5px';
+  plantImg.style.left = '5px';
+  plantImg.classList.add("plant");
+  plantImg.setAttribute('data-type', plantType);
+  plantImg.setAttribute('data-lot', lotIndex);
   
-console.log("Elemento criado:", plantImg.outerHTML);
+  console.log("Elemento criado:", plantImg.outerHTML);
+  lot.appendChild(plantImg);
   
-lot.appendChild(plantImg);
+  // Limpa o timeout registrado
+  field[lotIndex].growTimeout = null;
 
-  }, tempoCrescimento * 1000);
+}, tempoCrescimento * 1000);
 
-}
 
 
 function sellPlant(lotIndex) {

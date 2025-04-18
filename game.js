@@ -943,30 +943,33 @@ document.getElementById("btnAddAdubo").addEventListener("click", function() {
 document.getElementById("btnInstaGrow").addEventListener("click", function() {
   const fieldContainer = document.getElementById('field');
   field.forEach((lot, index) => {
+    // só entra se tiver planta e ela ainda não estiver marcada como crescida
     if (lot.plant && !lot.grown) {
+      
+      // 0) cancela o timer original (se existir)
+      if (lot.growTimeout) {
+        clearTimeout(lot.growTimeout);
+        lot.growTimeout = null;
+      }
+
+      // 1) marca como crescida
       lot.grown = true;
+
+      // 2) redesenha no DOM
       const lotElement = fieldContainer.children[index];
-      
-      // 1) Remove qualquer imagem antiga
-      const oldImg = lotElement.querySelector("img");
-      if (oldImg) lotElement.removeChild(oldImg);
-      
-      // 2) Cria a nova imagem com classe/atributos corretos
+      lotElement.innerHTML = '';  // limpa qualquer <img> antiga
+
       const plantImg = document.createElement('img');
       plantImg.src = plantsData[lot.plant].imageUrl;
       plantImg.classList.add('plant');
       plantImg.setAttribute('data-type', lot.plant);
-      plantImg.setAttribute('data-lot', index.toString());
-      plantImg.style.position = 'absolute';
-      plantImg.style.width    = '50px';
-      plantImg.style.height   = '50px';
-      plantImg.style.top      = '5px';
-      plantImg.style.left     = '5px';
-      
+      plantImg.setAttribute('data-lot', index);
+      plantImg.style.cssText = 'position:absolute;width:50px;height:50px;top:5px;left:5px';
       lotElement.appendChild(plantImg);
     }
   });
 });
+
 
 
 document.getElementById("btnAddCoins").addEventListener("click", function() {

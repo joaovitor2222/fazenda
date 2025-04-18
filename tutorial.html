@@ -56,6 +56,20 @@
     .card.flipped img {
       display: block;
     }
+
+    .step {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: rgb(0, 86, 255);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.step:hover {
+  background: rgb(0, 255, 255);
+  color: black;
+}
+
   </style>
 </head>
 <body>
@@ -112,6 +126,82 @@
     Tem <strong>30% de chance</strong> de gerar um <strong>adubo</strong> ao ser plantada.
   </p>
 </div>
+
+  <!-- Botão que abre/fecha o step -->
+<div class="step" onclick="toggleStep(1)">
+  📊 Tabela de Plantas (clique para exibir/ocultar)
+</div>
+
+<!-- Conteúdo escondido do step -->
+<div id="step1" style="display: none; margin-bottom: 20px;">
+  <table style="width:100%; border-collapse: collapse; margin-bottom: 30px;">
+    <thead>
+      <tr style="background-color: #e0e0e0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">Planta</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Compra</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Venda</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">Tempo de Crescimento</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Trigo</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">20</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">35</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">10s</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Milho</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">40</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">80</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">20s</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Framboesa</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">200</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">450</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">1min</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Morango</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">1000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">2500</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">3min</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Maçã</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">2500</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">6000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">5min</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Maçã Verde</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">12000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">50000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">12min</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Melancia</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">28000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">200000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">24min</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Banana</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">100</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">210</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">52s</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">Manga</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">1000</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">2200</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">2min 40s</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 
 
@@ -259,6 +349,16 @@ aduboAtual = Math.min(aduboAtual + aduboAward, aduboMaximo);
     
     alert(`Você completou o minigame em ${timeElapsed.toFixed(2)} segundos e ganhou ${aduboAward} adubo(s)! Total de adubos: ${aduboAtual}`);
   }
+
+    function toggleStep(stepNumber) {
+    let stepContent = document.getElementById(`step${stepNumber}`);
+    if (stepContent.style.display === "block") {
+        stepContent.style.display = "none";
+    } else {
+        stepContent.style.display = "block";
+    }
+}
+
 
 
 

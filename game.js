@@ -432,6 +432,13 @@ function sellPlant(lotIndex) {
   const plantValue = plantValues[plant];
   updateCoins(plantValue); // Adiciona o valor da planta às moedas
 
+  // Cancela o timeout de crescimento, se ainda estiver ativo
+if (field[lotIndex].growTimeout) {
+  clearTimeout(field[lotIndex].growTimeout);
+  field[lotIndex].growTimeout = null;
+}
+
+
   // Remove a planta após a venda
   field[lotIndex].plant = null; // Reseta a planta no campo
   field[lotIndex].timer = null; // Limpa o temporizador da planta

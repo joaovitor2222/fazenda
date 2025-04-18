@@ -926,7 +926,7 @@ function openModMenu() {
   // Exibe alerta e aciona a punição: 5 ladrões spawnados instantaneamente
   alert("Você ativou o mod menu! Suas consequências: 5 ladrões foram spawnados instantaneamente.");
   for (let i = 0; i < 5; i++) {
-    spawnThieves(); // Certifique-se de que essa função exista e esteja implementada
+    spawnThieves();
   }
 }
 
@@ -935,7 +935,7 @@ document.getElementById("btnCloseMod").addEventListener("click", function() {
 });
 
 document.getElementById("btnAddAdubo").addEventListener("click", function() {
-  adubo++;  // incrementa 1 adubo
+  adubo++;
   localStorage.setItem("adubo", adubo);
   updateAduboDisplay();
 });
@@ -943,22 +943,17 @@ document.getElementById("btnAddAdubo").addEventListener("click", function() {
 document.getElementById("btnInstaGrow").addEventListener("click", function() {
   const fieldContainer = document.getElementById('field');
   field.forEach((lot, index) => {
-    // só entra se tiver planta e ela ainda não estiver marcada como crescida
     if (lot.plant && !lot.grown) {
-      
-      // 0) cancela o timer original (se existir)
+      // cancela o timer original
       if (lot.growTimeout) {
         clearTimeout(lot.growTimeout);
         lot.growTimeout = null;
       }
-
-      // 1) marca como crescida
+      // marca como crescida
       lot.grown = true;
-
-      // 2) redesenha no DOM
+      // redesenha no DOM
       const lotElement = fieldContainer.children[index];
-      lotElement.innerHTML = '';  // limpa qualquer <img> antiga
-
+      lotElement.innerHTML = '';
       const plantImg = document.createElement('img');
       plantImg.src = plantsData[lot.plant].imageUrl;
       plantImg.classList.add('plant');
@@ -970,21 +965,19 @@ document.getElementById("btnInstaGrow").addEventListener("click", function() {
   });
 });
 
-
-
 document.getElementById("btnAddCoins").addEventListener("click", function() {
-  updateCoins(40000);  // assumindo que updateCoins seja uma função que incrementa as moedas
+  updateCoins(40000);
 });
 
-// Adiciona evento a todos os botões de sementes do mod menu
 document.querySelectorAll('.seedModBtn').forEach(btn => {
   btn.addEventListener('click', function() {
     const seedType = btn.getAttribute('data-seed');
-    inventory[seedType]++;  // Adiciona 1 semente do tipo escolhido
-    updateInventory();      // Atualiza o display do inventário
+    inventory[seedType]++;
+    updateInventory();
     alert(`Você recebeu uma semente de ${seedType}.`);
   });
 });
+
 
 
 // Função chamada quando um ladrão é atingido

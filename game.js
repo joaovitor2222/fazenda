@@ -405,7 +405,7 @@ field[lotIndex].growTimeout = setTimeout(() => {
 
   field[lotIndex].growTimeout = null; // limpa a referência após uso
 }, tempoCrescimento * 1000);
-
+}
 
 
 

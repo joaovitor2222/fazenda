@@ -932,26 +932,33 @@ document.getElementById("btnAddAdubo").addEventListener("click", function() {
 });
 
 document.getElementById("btnInstaGrow").addEventListener("click", function() {
-  // Supondo que 'field' seja um array onde cada posição tem {plant, grown, ...}
   const fieldContainer = document.getElementById('field');
   field.forEach((lot, index) => {
     if (lot.plant && !lot.grown) {
       lot.grown = true;
       const lotElement = fieldContainer.children[index];
-      // Verifica se já não existe uma imagem
-      if (lotElement && !lotElement.querySelector("img")) {
-        const plantImg = document.createElement('img');
-        plantImg.src = plantsData[lot.plant].imageUrl;
-        plantImg.style.position = 'absolute';
-        plantImg.style.width = '50px';
-        plantImg.style.height = '50px';
-        plantImg.style.top = '5px';
-        plantImg.style.left = '5px';
-        lotElement.appendChild(plantImg);
-      }
+      
+      // 1) Remove qualquer imagem antiga
+      const oldImg = lotElement.querySelector("img");
+      if (oldImg) lotElement.removeChild(oldImg);
+      
+      // 2) Cria a nova imagem com classe/atributos corretos
+      const plantImg = document.createElement('img');
+      plantImg.src = plantsData[lot.plant].imageUrl;
+      plantImg.classList.add('plant');
+      plantImg.setAttribute('data-type', lot.plant);
+      plantImg.setAttribute('data-lot', index.toString());
+      plantImg.style.position = 'absolute';
+      plantImg.style.width    = '50px';
+      plantImg.style.height   = '50px';
+      plantImg.style.top      = '5px';
+      plantImg.style.left     = '5px';
+      
+      lotElement.appendChild(plantImg);
     }
   });
 });
+
 
 document.getElementById("btnAddCoins").addEventListener("click", function() {
   updateCoins(40000);  // assumindo que updateCoins seja uma função que incrementa as moedas

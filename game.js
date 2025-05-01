@@ -689,39 +689,28 @@ let securityList = []; // Lista de seguranças
 
 
 // Adiciona o BrasilBall (segurança) ao campo de segurança
-function createSecurity() {
-  const security = document.createElement('div');
-  security.classList.add('security');
-  security.style.position = 'absolute';
-  // configure posição conforme quiser
-  security.style.left = '10px';
-  security.style.top = '10px';
+document.getElementById('securityButton').onclick = function () {
+  if (coins < securityCost) {
+    alert('Você não tem moedas suficientes para contratar um segurança!');
+    return;
+  }
+  if (securityCount >= maxSecurity) {
+    alert('Você já contratou o número máximo de seguranças!');
+    return;
+  }
 
-  const img = document.createElement('img');
-  img.src = ''; // URL da imagem
-  img.alt = 'brasil';
-  security.appendChild(img);
+  // 1) debita custo
+  coins -= securityCost;
+  updateCoinsDisplay();
 
-  document.getElementById('securityField').appendChild(security);
-  securityList.push(security);         // ← adiciona aqui
+  // 2) incrementa contador
+  securityCount++;
+  // updateSecurityDisplay();  // opcional aqui, pois createSecurity já chama
 
-  resetAllSecurityIntervals();
-  updateSecurityDisplay();
+  // 3) cria segurança (já faz push e resetAllSecurityIntervals)
+  createSecurity();
+};
 
-  // === Nova lógica de ataque ===
-  const attackInterval = setInterval(() => {
-    // seleciona todos os ladrões na página, independente de container
-    const thieves = document.querySelectorAll('.thief');
-    thieves.forEach(thief => {
-      if (isInRange(security, thief)) {
-        eliminateThief(thief);
-      }
-    });
-  }, 1000);
-
-  // opcional: guarde o intervalo para limpar depois
-  security.attackInterval = attackInterval;
-}
 
 function resetAllSecurityIntervals() {
   const n = securityList.length;

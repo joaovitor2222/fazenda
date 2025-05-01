@@ -711,6 +711,24 @@ document.getElementById('securityButton').onclick = function () {
   createSecurity();
 };
 
+function createSecurity() {
+  const security = document.createElement('div');
+  security.classList.add('security');
+  security.style.position = 'absolute';
+  security.style.left = '10px';
+  security.style.top = '10px';
+
+  const img = document.createElement('img');
+  img.src = ''; // URL da imagem
+  img.alt = 'brasil';
+  security.appendChild(img);
+
+  document.getElementById('securityField').appendChild(security);
+  securityList.push(security);
+  updateSecurityDisplay();
+  resetAllSecurityIntervals();
+}
+
 
 function resetAllSecurityIntervals() {
   const n = securityList.length;

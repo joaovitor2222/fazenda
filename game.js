@@ -682,7 +682,7 @@ let hiredSecurityCount = 0;  // Quantidade de seguranças contratados
 let securityBaseTime = 5;    // Tempo base que a segurança leva para agir, em segundos
 const maxSecurity = 5; // Limite de seguranças
 const securityCost = 1200; // Custo por segurança
-const securityRange = 60; // Distância em pixels em que os seguranças podem atacar
+const securityRange = 2000; // Distância em pixels em que os seguranças podem atacar
 const securityReward = 280; // Recompensa por ladrão atingido
 
 let securityList = []; // Lista de seguranças

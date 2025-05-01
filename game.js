@@ -693,14 +693,49 @@ function createSecurity() {
   const security = document.createElement('div');
   security.classList.add('security');
   security.style.position = 'absolute';
-  // Configurações do segurança, como imagem do BrasilBall:
+  // configure posição conforme quiser
+  security.style.left = '10px';
+  security.style.top = '10px';
+
   const img = document.createElement('img');
-  img.src = ''; // Adicione a URL da imagem do BrasilBall
+  img.src = ''; // URL da imagem
   img.alt = 'brasil';
   security.appendChild(img);
 
   document.getElementById('securityField').appendChild(security);
   updateSecurityDisplay();
+
+  // === Nova lógica de ataque ===
+  const attackInterval = setInterval(() => {
+    // seleciona todos os ladrões na página, independente de container
+    const thieves = document.querySelectorAll('.thief');
+    thieves.forEach(thief => {
+      if (isInRange(security, thief)) {
+        eliminateThief(thief);
+      }
+    });
+  }, 1000);
+
+  // opcional: guarde o intervalo para limpar depois
+  security.attackInterval = attackInterval;
+}
+
+function isInRange(secEl, thiefEl) {
+  const secRect   = secEl.getBoundingClientRect();
+  const thiefRect = thiefEl.getBoundingClientRect();
+  const dx = (secRect.left + secRect.width/2) - (thiefRect.left + thiefRect.width/2);
+  const dy = (secRect.top  + secRect.height/2) - (thiefRect.top  + thiefRect.height/2);
+  const distance = Math.sqrt(dx*dx + dy*dy);
+  const range = 100; // por exemplo, 100px de alcance
+  return distance <= range;
+}
+
+function eliminateThief(thiefEl) {
+  // limpe timers do ladrão, se houver
+  if (thiefEl.moveInterval) clearInterval(thiefEl.moveInterval);
+  // animação/opção antes de remover...
+  thiefEl.remove();
+  // atualizar display, pontuação, etc.
 }
 
 

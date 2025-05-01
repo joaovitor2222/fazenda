@@ -703,6 +703,9 @@ function createSecurity() {
   security.appendChild(img);
 
   document.getElementById('securityField').appendChild(security);
+  securityList.push(security);         // ← adiciona aqui
+
+  resetAllSecurityIntervals();
   updateSecurityDisplay();
 
   // === Nova lógica de ataque ===
@@ -718,6 +721,44 @@ function createSecurity() {
 
   // opcional: guarde o intervalo para limpar depois
   security.attackInterval = attackInterval;
+}
+
+function resetAllSecurityIntervals() {
+  const n = securityList.length;
+  const [captures, delay] = securityParams(n);
+
+  securityList.forEach(secEl => {
+    // 1) limpa qualquer intervalo antigo
+    if (secEl.attackInterval) clearInterval(secEl.attackInterval);
+
+    // 2) agenda novo intervalo com os parâmetros certos
+    secEl.attackInterval = setInterval(() => {
+      // seleciona todos os ladrões atuais na página
+      const thievesEls = Array.from(document.querySelectorAll('.thief'));
+
+      if (delay === 0) {
+        // captura todos instantaneamente e encerra este interval
+        thievesEls.forEach(eliminateThief);
+        clearInterval(secEl.attackInterval);
+        return;
+      }
+
+      // captura até `captures` primeiros ladrões
+      thievesEls.slice(0, captures).forEach(eliminateThief);
+    }, delay);
+  });
+}
+
+
+// Parâmetros [quantidade de capturas, delay em ms] para cada número de seguranças
+function securityParams(n) {
+  switch (n) {
+    case 1: return [1, 8000];
+    case 2: return [2, 6000];
+    case 3: return [3, 4000];
+    case 4: return [4, 2000];
+    default: return [Infinity, 0];  // 5 ou mais → instantâneo
+  }
 }
 
 function isInRange(secEl, thiefEl) {
@@ -756,12 +797,21 @@ document.getElementById('securityButton').onclick = function () {
     return;
   }
 
+  // 1) Paga pela segurança
   coins -= securityCost;
-  createSecurity();    // Cria o segurança primeiro
-  securityCount++;     // Incrementa depois
   updateCoinsDisplay();
+
+  // 2) Incrementa o contador e atualiza o display
+  securityCount++;
   updateSecurityDisplay();
+
+  // 3) Cria o elemento de segurança **e** já o adiciona a securityList
+  createSecurity();
+
+  // 4) Reconfigura TODOS os intervals de ataque com as novas regras
+  resetAllSecurityIntervals();
 };
+
 
 
 

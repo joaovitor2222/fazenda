@@ -731,12 +731,16 @@ function isInRange(secEl, thiefEl) {
 }
 
 function eliminateThief(thiefEl) {
-  // limpe timers do ladrão, se houver
+  // 1) Limpa qualquer timer/movimento do ladrão
   if (thiefEl.moveInterval) clearInterval(thiefEl.moveInterval);
-  // animação/opção antes de remover...
+
+  // 2) Remove o ladrão do DOM
   thiefEl.remove();
-  // atualizar display, pontuação, etc.
+
+  // 3) Chama a recompensa e alerta
+  onThiefShot(thiefEl);
 }
+
 
 
 

@@ -726,7 +726,7 @@ function isInRange(secEl, thiefEl) {
   const dx = (secRect.left + secRect.width/2) - (thiefRect.left + thiefRect.width/2);
   const dy = (secRect.top  + secRect.height/2) - (thiefRect.top  + thiefRect.height/2);
   const distance = Math.sqrt(dx*dx + dy*dy);
-  const range = 100; // por exemplo, 100px de alcance
+  const range = 2000; // por exemplo, 2000px de alcance
   return distance <= range;
 }
 

@@ -718,16 +718,26 @@ function createSecurity() {
   security.style.left = '10px';
   security.style.top = '10px';
 
+  // Defina um ID único baseado na quantidade atual de seguranças
+  const securityId = securityList.length;
+  security.id = `security-${securityId}`;
+  security.dataset.securityId = securityId; // útil se precisar depois
+  security.idValue = securityId; // opcional, se quiser guardar em JS
+
   const img = document.createElement('img');
   img.src = ''; // URL da imagem
   img.alt = 'brasil';
   security.appendChild(img);
 
   document.getElementById('securityField').appendChild(security);
-  securityList.push(security);
+  securityList.push({ element: security, id: securityId });
+
+  resetAllSecurityIntervals();  // atualiza delays
   updateSecurityDisplay();
-  resetAllSecurityIntervals();
 }
+
+
+
 
 
 function resetAllSecurityIntervals() {
